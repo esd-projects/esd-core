@@ -11,7 +11,7 @@ namespace ESD\Core\Plugins\Event;
 use ESD\Core\Exception;
 use ESD\Core\PlugIn\AbstractPlugin;
 use ESD\Core\Plugins\DI\DIPlugin;
-use ESD\Core\Server\Message\MessageProcessor;
+use ESD\Core\Server\Process\Message\MessageProcessor;
 use ESD\Core\Server\Server;
 use ESD\Coroutine\Context\Context;
 

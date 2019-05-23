@@ -38,7 +38,7 @@ class Message
     {
         $this->type = $type;
         $this->data = $data;
-        $this->fromProcessId = Server::$instance->getProcessManager()->getCurrentProcessId();
+        $this->fromProcessId = Server::$instance->getAbstractServer()->getProcessManager()->getCurrentProcessId();
     }
 
     /**

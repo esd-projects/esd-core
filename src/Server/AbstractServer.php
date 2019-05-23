@@ -6,6 +6,8 @@ namespace ESD\Core\Server;
 
 use ESD\Core\Exception\ConfigException;
 use ESD\Core\Plugins\Event\ApplicationEvent;
+use ESD\Core\Server\Interfaces\ISwooleServer;
+use ESD\Core\Server\Interfaces\IWebsocketServer;
 use ESD\Core\Server\Port\IServerPort;
 use ESD\Core\Server\Port\PortManager;
 use ESD\Core\Server\Process\Process;

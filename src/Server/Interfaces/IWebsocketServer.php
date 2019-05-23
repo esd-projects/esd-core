@@ -1,7 +1,7 @@
 <?php
 
 
-namespace ESD\Core\Server;
+namespace ESD\Core\Server\Interfaces;
 
 
 use ESD\Core\Server\Beans\WebSocketFrame;

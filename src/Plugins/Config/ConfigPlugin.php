@@ -53,8 +53,8 @@ class ConfigPlugin extends AbstractPlugin
     {
         parent::__construct();
         if ($configConfig == null) {
-            if (defined("CONFIG_DIR")) {
-                $path = CONFIG_DIR;
+            if (defined("RES_DIR")) {
+                $path = RES_DIR;
             } else {
                 $path = Server::$instance->getServerConfig()->getRootDir() . "/resources";
             }

@@ -41,8 +41,8 @@ class ConfigContext
         $eventDispatcher = Server::$instance->getContext()->getDeepByClassName(EventDispatcher::class);
         //尝试发出更新信号
         if ($eventDispatcher instanceof EventDispatcher) {
-            if (Server::$instance->getProcessManager() != null && Server::$isStart) {
-                $eventDispatcher->dispatchProcessEvent(new ConfigChangeEvent(), ...Server::$instance->getProcessManager()->getProcesses());
+            if (Server::$instance->getAbstractServer()->getProcessManager() != null && Server::$isStart) {
+                $eventDispatcher->dispatchProcessEvent(new ConfigChangeEvent(), ...Server::$instance->getAbstractServer()->getProcessManager()->getProcesses());
             } else {
                 $eventDispatcher->dispatchEvent(new ConfigChangeEvent());
             }

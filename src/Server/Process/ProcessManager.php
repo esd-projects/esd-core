@@ -142,7 +142,7 @@ class ProcessManager
     public function createProcess()
     {
         //配置默认工作进程
-        $serverConfig = $this->server->getServerConfig();
+        $serverConfig = Server::$instance->getServerConfig();
         for ($i = 0; $i < $serverConfig->getWorkerNum(); $i++) {
             $defaultProcessClass = $this->getDefaultProcessClass();
             $process = new $defaultProcessClass($this->server, $i, "worker-" . $i, Process::WORKER_GROUP);
@@ -168,7 +168,7 @@ class ProcessManager
     {
         if ($process->getProcessType() == Process::PROCESS_TYPE_CUSTOM) {
             $process->createProcess();
-            $this->server->getServer()->addProcess($process->getSwooleProcess());
+            Server::$instance->getAbstractServer()->getServer()->addProcess($process->getSwooleProcess());
         }
         $this->processes[$process->getProcessId()] = $process;
     }
@@ -209,7 +209,7 @@ class ProcessManager
      */
     public function getMasterPid()
     {
-        return $this->server->getServer()->master_pid ?? null;
+        return Server::$instance->getAbstractServer()->getServer()->master_pid ?? null;
     }
 
     /**
@@ -218,7 +218,7 @@ class ProcessManager
      */
     public function getManagerPid()
     {
-        return $this->server->getServer()->manager_pid ?? null;
+        return Server::$instance->getAbstractServer()->getServer()->manager_pid ?? null;
     }
 
     /**
@@ -227,7 +227,7 @@ class ProcessManager
      */
     public function getCurrentProcessId()
     {
-        return $this->server->getServer()->worker_id ?? null;
+        return Server::$instance->getAbstractServer()->getServer()->worker_id ?? null;
     }
 
     /**
@@ -235,7 +235,7 @@ class ProcessManager
      */
     public function setCurrentProcessId($processId)
     {
-        $this->server->getServer()->worker_id = $processId;
+        Server::$instance->getAbstractServer()->getServer()->worker_id = $processId;
     }
 
     /**
@@ -245,7 +245,7 @@ class ProcessManager
      */
     public function getCurrentProcessPid()
     {
-        return $this->server->getServer()->worker_pid;
+        return Server::$instance->getAbstractServer()->getServer()->worker_pid;
     }
 
     /**
@@ -253,7 +253,7 @@ class ProcessManager
      */
     public function setCurrentProcessPid($processPid)
     {
-        $this->server->getServer()->worker_pid = $processPid;
+        Server::$instance->getAbstractServer()->getServer()->worker_pid = $processPid;
     }
 
     /**

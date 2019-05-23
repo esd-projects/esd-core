@@ -26,9 +26,9 @@ class MasterProcess extends Process
     {
         Process::setProcessTitle(Server::$instance->getServerConfig()->getName() . "-" . $this->getProcessName());
         $this->processPid = getmypid();
-        $this->server->getProcessManager()->setCurrentProcessId($this->processId);
+        Server::$instance->getAbstractServer()->getProcessManager()->setCurrentProcessId($this->processId);
         Process::signal(SIGINT, function () {
-            Server::$instance->shutdown();
+            Server::$instance->getAbstractServer()->shutdown();
         });
     }
 

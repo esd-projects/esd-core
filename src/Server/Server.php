@@ -124,8 +124,8 @@ class Server
             throw new \Exception("$defaultAbstractServerClass not exists!");
         }
 
-        $this->abstractServer = new $defaultAbstractServerClass($defaultPortClass, $defaultProcessClass);
-        if($this->abstractServer instanceof AbstractServer) {
+        $this->abstractServer = new $defaultAbstractServerClass($this, $defaultPortClass, $defaultProcessClass);
+        if(!$this->abstractServer instanceof AbstractServer) {
             throw new \Exception("$defaultAbstractServerClass must extend AbstractServer!");
         }
 

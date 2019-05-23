@@ -1,12 +1,15 @@
 <?php
 
 
-namespace ESD\Core\Server;
+namespace ESD\Core\Server\Interfaces;
 
 
+use ESD\Core\Exception\ConfigException;
 use ESD\Core\Server\Beans\ClientInfo;
 use ESD\Core\Server\Beans\ServerStats;
+use ESD\Core\Server\Process\Process;
 use Iterator;
+use ReflectionException;
 
 interface ISwooleServer
 {
@@ -150,7 +153,7 @@ interface ISwooleServer
      * @param string $name
      * @param null $processClass 不填写将用默认的
      * @param string $groupName
-     * @throws Exception\ConfigException
+     * @throws ConfigException
      * @throws ReflectionException
      */
     public function addProcess(string $name, $processClass = null, string $groupName = Process::DEFAULT_GROUP);

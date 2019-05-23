@@ -100,7 +100,7 @@ class EventDispatcher
      */
     public function dispatchProcessEvent(Event $event, Process ... $toProcess)
     {
-        $processManager = Server::$instance->getProcessManager();
+        $processManager = Server::$instance->getAbstractServer()->getProcessManager();
         if ($processManager == null) {
             $this->dispatchEvent($event);
             return;
@@ -125,8 +125,9 @@ class EventDispatcher
      */
     public function dispatchEvent(Event $event)
     {
-        if (Server::$instance->getProcessManager() != null) {
-            $event->setProcessId(Server::$instance->getProcessManager()->getCurrentProcessId());
+        $processManager = Server::$instance->getAbstractServer()->getProcessManager();
+        if ($processManager != null) {
+            $event->setProcessId($processManager->getCurrentProcessId());
         }
         if (!array_key_exists($event->getType(), $this->eventChannels)) {
             return; // no need to do anything

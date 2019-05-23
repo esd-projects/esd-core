@@ -40,7 +40,7 @@ class SwooleProcessor implements ProcessorInterface
         if ($record['level'] < $this->level) {
             return $record;
         }
-        $process = Server::$instance->getProcessManager()->getCurrentProcess();
+        $process = Server::$instance->getAbstractServer()->getProcessManager()->getCurrentProcess();
         if ($process != null) {
             // we should have the call source now
             $record['extra'] = array_merge(

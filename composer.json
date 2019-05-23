@@ -1,5 +1,12 @@
 {
   "require": {
+    "monolog/monolog": "^1.24",
+    "symfony/console": "^4.2",
+    "symfony/yaml": "^4.2",
+    "php-di/php-di": "^6.0",
+    "ocramius/proxy-manager": "^2.1",
+    "doctrine/annotations": "^1.6",
+
     "esd/esd-coroutine": "~0.1",
 
     "ext-swoole": "^4.3.0"

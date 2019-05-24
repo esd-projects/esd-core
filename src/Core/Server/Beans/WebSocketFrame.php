@@ -11,7 +11,7 @@ namespace ESD\Core\Server\Beans;
 /**
  * WebSocketFrame结构
  * Class WebSocketFrame
- * @package ESD\BaseServer\Server\Beans
+ * @package ESD\BaseServer\Co\Beans
  */
 class WebSocketFrame
 {

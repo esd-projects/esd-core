@@ -21,7 +21,7 @@ use Throwable;
 /**
  * 插件管理器
  * Class PlugManager
- * @package ESD\BaseServer\Server\Plug
+ * @package ESD\BaseServer\Co\Plug
  */
 class PluginInterfaceManager implements PluginInterface
 {

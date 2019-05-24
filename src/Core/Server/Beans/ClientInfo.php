@@ -11,7 +11,7 @@ namespace ESD\Core\Server\Beans;
 /**
  * 连接信息
  * Class ClientInfo
- * @package ESD\BaseServer\Server\Beans
+ * @package ESD\BaseServer\Co\Beans
  */
 class ClientInfo
 {

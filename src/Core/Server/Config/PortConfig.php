@@ -14,7 +14,7 @@ use ESD\Core\Plugins\Config\BaseConfig;
 /**
  * 端口配置
  * Class PortConfig
- * @package ESD\BaseServer\Server\Config
+ * @package ESD\BaseServer\Co\Config
  */
 class PortConfig extends BaseConfig
 {

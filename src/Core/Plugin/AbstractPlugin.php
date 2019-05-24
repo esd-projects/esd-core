@@ -17,7 +17,7 @@ use ESD\Coroutine\Context\Context;
 /**
  * 基础插件，插件类需要继承
  * Class BasePlug
- * @package ESD\BaseServer\Server\Plug
+ * @package ESD\BaseServer\Co\Plug
  */
 abstract class AbstractPlugin extends Order implements PluginInterface
 {

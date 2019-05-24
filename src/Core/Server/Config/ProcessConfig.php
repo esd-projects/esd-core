@@ -16,7 +16,7 @@ use ReflectionException;
 /**
  * 进程配置
  * Class ProcessConfig
- * @package ESD\BaseServer\Server\Config
+ * @package ESD\BaseServer\Co\Config
  */
 class ProcessConfig extends BaseConfig
 {

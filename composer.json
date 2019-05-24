@@ -6,18 +6,16 @@
     "php-di/php-di": "^6.0",
     "ocramius/proxy-manager": "^2.1",
     "doctrine/annotations": "^1.6",
-
-    "esd/esd-coroutine": "~0.1",
-
     "ext-swoole": "^4.3.0"
   },
   "autoload": {
     "psr-4": {
-      "ESD\\Core\\": "src/",
-      "ESD\\Core\\ExampleClass\\": "exampleClass/"
+      "ESD\\": "src/",
+      "ESD\\ExampleClass\\": "exampleClass/src"
     },
     "files": [
-      "src/Common.php"
+      "src/Core/Common.php",
+      "src/Coroutine/Common.php"
     ]
   },
 

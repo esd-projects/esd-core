@@ -111,7 +111,7 @@ interface ISwooleServer
      * 1005 连接不存在，传入$fd 可能是错误的
      * 1007 接收到了超时的数据，TCP关闭连接后，可能会有部分数据残留在管道缓存区内，这部分数据会被丢弃
      * 1008 发送缓存区已满无法执行send操作，出现这个错误表示这个连接的对端无法及时收数据导致发送缓存区已塞满
-     * 1202 发送的数据超过了 Server->buffer_output_size 设置
+     * 1202 发送的数据超过了 Co->buffer_output_size 设置
      * @return int
      */
     public function getLastError(): int;

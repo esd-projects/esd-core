@@ -1,0 +1,3 @@
+aop:
+  include_paths:
+    - /mnt/c/Users/administrato/PhpstormProjects/go-swoole/examples/src

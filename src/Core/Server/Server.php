@@ -26,9 +26,9 @@ use ESD\Core\Server\Config\ServerConfig;
 use ReflectionException;
 
 /**
- * Class Server
+ * Class Co
  * 封装了Server对象
- * @package ESD\BaseServer\Server
+ * @package ESD\BaseServer\Co
  */
 class Server
 {
@@ -98,7 +98,7 @@ class Server
 
     /**
      * 这里context获取不到任何插件，因为插件还没有加载
-     * Server constructor.
+     * Co constructor.
      * @param ServerConfig $serverConfig
      * @param string $defaultAbstractServerClass
      * @param string $defaultPortClass

@@ -1,2 +1,0 @@
-0
-a:2:{i:0;O:47:"ESD\Plugins\EasyRoute\Annotation\RequestMapping":2:{s:5:"value";s:6:"/hello";s:6:"method";a:2:{i:0;s:4:"post";i:1;s:3:"get";}}i:1;O:45:"ESD\Plugins\EasyRoute\Annotation\RequestParam":3:{s:5:"value";s:2:"id";s:5:"param";N;s:8:"required";b:0;}}

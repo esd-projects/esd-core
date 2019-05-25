@@ -9,10 +9,9 @@
 namespace ESD\Core\Server\Port;
 
 
-use ESD\Core\Exception\ConfigException;
+use ESD\Core\Config\ConfigException;
 use ESD\Core\Server\Config\PortConfig;
 use ESD\Core\Server\Server;
-use ReflectionException;
 
 class PortManager
 {
@@ -21,11 +20,11 @@ class PortManager
      */
     private $portConfigs = [];
     /**
-     * @var IServerPort[]
+     * @var ServerPort[]
      */
     private $ports = [];
     /**
-     * @var IServerPort[]
+     * @var ServerPort[]
      */
     private $namePorts = [];
     /**
@@ -74,7 +73,7 @@ class PortManager
      * 获取配置
      * @return PortConfig[]
      * @throws ConfigException
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function getPortConfigs()
     {
@@ -94,7 +93,7 @@ class PortManager
     /**
      * 创建端口实例
      * @throws ConfigException
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function createPorts()
     {
@@ -113,7 +112,7 @@ class PortManager
             if (isset($this->ports[$portConfig->getPort()])) {
                 throw new ConfigException("端口号有重复");
             }
-            if (!$serverPort instanceof IServerPort) {
+            if (!$serverPort instanceof ServerPort) {
                 throw new ConfigException("端口实例必须继承ServerPort");
             }
             $this->ports[$portConfig->getPort()] = $serverPort;
@@ -122,7 +121,7 @@ class PortManager
     }
 
     /**
-     * @return IServerPort[]
+     * @return ServerPort[]
      */
     public function getPorts(): array
     {
@@ -132,7 +131,7 @@ class PortManager
     /**
      * 获取对应端口号的port实例
      * @param $portNo
-     * @return IServerPort|null
+     * @return ServerPort|null
      */
     public function getPortFromPortNo($portNo)
     {
@@ -142,7 +141,7 @@ class PortManager
     /**
      * 获取对应端口号的port实例
      * @param $name
-     * @return IServerPort|null
+     * @return ServerPort|null
      */
     public function getPortFromName($name)
     {
@@ -183,11 +182,11 @@ class PortManager
 
     /**
      * @param int $fd
-     * @return IServerPort|null
+     * @return ServerPort|null
      */
     public function getPortFromFd(int $fd)
     {
-        $clientInfo = Server::$instance->getAbstractServer()->getClientInfo($fd);
+        $clientInfo = Server::$instance->getClientInfo($fd);
         return $this->getPortFromPortNo($clientInfo->getServerPort());
     }
 }

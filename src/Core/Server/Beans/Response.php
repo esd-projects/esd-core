@@ -11,27 +11,28 @@ namespace ESD\Core\Server\Beans;
 /**
  * HTTP请求返回对象
  * Class Response
+ * @package ESD\Core\Server\Beans
  */
-abstract class Response
+class Response
 {
     /**
      * @var bool
      */
-    protected $isEnd = false;
+    private $isEnd = false;
 
-    protected $fd;
+    private $fd;
+    /**
+     * swoole的原始对象
+     * @var Swoole\Http\Response
+     */
+    private $swooleResponse;
 
     protected $buffer = "";
 
-    /**
-     * swoole的原始对象
-     * @var \Swoole\Http\Response
-     */
-    protected $swooleResponse;
-
-    public function __construct()
+    public function __construct($swooleResponse)
     {
-
+        $this->swooleResponse = $swooleResponse;
+        $this->fd = $swooleResponse->fd;
     }
 
     /**
@@ -40,7 +41,10 @@ abstract class Response
      * @param string $value
      * @param bool $ucwords 是否需要对Key进行Http约定格式化，默认true会自动格式化
      */
-    abstract public function addHeader(string $key, string $value, bool $ucwords = true);
+    public function addHeader(string $key, string $value, bool $ucwords = true)
+    {
+        $this->swooleResponse->header($key, $value, $ucwords);
+    }
 
     /**
      * 设置HTTP响应的cookie信息。此方法参数与PHP的setcookie完全一致。
@@ -54,25 +58,37 @@ abstract class Response
      * @param bool $secure
      * @param bool $httponly
      */
-    abstract public function addCookie(string $key, string $value = '', int $expire = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false);
+    public function addCookie(string $key, string $value = '', int $expire = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
+    {
+        $this->swooleResponse->cookie($key, $value, $expire, $path, $domain, $secure, $httponly);
+    }
 
     /**
      * @param string $key
      */
-    abstract public function delCookie(string $key);
+    public function delCookie(string $key)
+    {
+        $this->addCookie($key, "");
+    }
 
     /**
      * 发送Http状态码。
      * @param int $http_status_code
      */
-    abstract public function setStatus(int $http_status_code);
+    public function setStatus(int $http_status_code)
+    {
+        $this->swooleResponse->status($http_status_code);
+    }
 
     /**
      * 发送Http跳转。调用此方法会自动end发送并结束响应。
      * @param string $url
      * @param int $http_code
      */
-    abstract public function redirect(string $url, int $http_code = 302);
+    public function redirect(string $url, int $http_code = 302)
+    {
+        $this->swooleResponse->redirect($url, $http_code);
+    }
 
     /**
      * 启用Http Chunk分段向浏览器发送相应内容。关于Http Chunk可以参考Http协议标准文档。
@@ -80,7 +96,10 @@ abstract class Response
      * 调用end方法后会发送一个长度为0的Chunk表示数据传输完毕
      * @param string $data
      */
-    abstract public function write(string $data);
+    public function write(string $data)
+    {
+        $this->swooleResponse->write($data);
+    }
 
     /**
      * 发送文件到浏览器。
@@ -90,7 +109,10 @@ abstract class Response
      * @param int $offset
      * @param int $length
      */
-    abstract public function sendfile(string $filename, int $offset = 0, int $length = 0);
+    public function sendfile(string $filename, int $offset = 0, int $length = 0)
+    {
+        $this->swooleResponse->sendfile($filename, $offset, $length);
+    }
 
     /**
      * 像缓冲区增加数据
@@ -115,13 +137,40 @@ abstract class Response
      * 发送Http响应体，并结束请求处理。
      * @param string $html
      */
-    abstract public function end(?string $html);
+    public function end(?string $html)
+    {
+        if ($this->isEnd) {
+            return;
+        }
+        if ($html === null) {
+            $this->swooleResponse->end($this->buffer);
+            $this->isEnd = true;
+            $this->buffer = "";
+            return;
+        }
+        $this->swooleResponse->end($this->buffer . $html);
+        $this->isEnd = true;
+        $this->buffer = "";
+    }
 
     /**
      * 分离响应对象。使用此方法后，$response对象销毁时不会自动end，与Http\Response::create和Server::send配合使用。
      */
-    abstract public function detach();
+    public function detach()
+    {
+        $this->swooleResponse->detach();
+    }
 
+    /**
+     * 构造新的Http\Response对象。使用此方法前请务必调用detach方法将旧的$response对象分离，否则可能会造成对同一个请求发送两次响应内容。
+     * 调用失败返回false
+     * @param $fd
+     * @return Response
+     */
+    public static function create($fd)
+    {
+        return new Response(\Swoole\Http\Response::create($fd));
+    }
 
     /**
      * @return mixed
@@ -134,22 +183,34 @@ abstract class Response
     /**
      * @return mixed
      */
-    abstract public function getHeader();
+    public function getHeader()
+    {
+        return $this->swooleResponse->header;
+    }
 
     /**
      * @param mixed $header
      */
-    abstract public function setHeader($header): void;
+    public function setHeader($header): void
+    {
+        $this->swooleResponse->header = $header;
+    }
 
     /**
      * @return mixed
      */
-    abstract public function getCookie();
+    public function getCookie()
+    {
+        return $this->swooleResponse->cookie;
+    }
 
     /**
      * @param mixed $cookie
      */
-    abstract public function setCookie($cookie): void;
+    public function setCookie($cookie): void
+    {
+        $this->swooleResponse->cookie = $cookie;
+    }
 
     /**
      * @return bool

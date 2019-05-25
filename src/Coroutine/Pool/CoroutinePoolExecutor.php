@@ -8,21 +8,19 @@
 
 namespace ESD\Coroutine\Pool;
 
-
-use Exception;
-use ESD\Coroutine\Channel\Channel;
+use ESD\Coroutine\ChannelImpl;
 use ESD\Coroutine\Co;
 
 /**
  * 协程池
  * Class CoroutinePoolExecutor
- * @package ESD\BaseServer\Coroutine\Pool
+ * @package ESD\Coroutine\Pool
  */
 class CoroutinePoolExecutor
 {
     /**
      * 通道
-     * @var Channel
+     * @var ChannelImpl
      */
     private $channel;
 
@@ -71,7 +69,7 @@ class CoroutinePoolExecutor
      */
     public function __construct(int $corePoolSize, int $maximumPoolSize, float $keepAliveTime)
     {
-        $this->channel = new Channel($corePoolSize);
+        $this->channel = new ChannelImpl($corePoolSize);
         $this->cids = [];
         $this->corePoolSize = $corePoolSize;
         $this->maximumPoolSize = $maximumPoolSize;
@@ -119,7 +117,6 @@ class CoroutinePoolExecutor
                 }
             }
         });
-
         $this->cids[$cid] = $cid;
     }
 
@@ -138,12 +135,12 @@ class CoroutinePoolExecutor
     /**
      * 执行任务
      * @param $runnable
-     * @throws Exception
+     * @throws \Exception
      */
     public function execute($runnable)
     {
         if ($this->isDestroy()) {
-            throw new Exception("协程池已经销毁，不能执行任务");
+            throw new \Exception("协程池已经销毁，不能执行任务");
         }
         $coCount = count($this->cids);
         //如果小于核心协程数量将继续创建并执行任务

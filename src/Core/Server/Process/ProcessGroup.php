@@ -11,7 +11,7 @@ namespace ESD\Core\Server\Process;
 /**
  * 进程组
  * Class ProcessGroup
- * @package ESD\BaseServer\Co
+ * @package ESD\Core\Server
  */
 class ProcessGroup
 {

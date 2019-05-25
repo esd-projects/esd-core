@@ -8,19 +8,20 @@
 
 namespace ESD\Core\Server\Process;
 
-use ESD\Core\Plugins\Event\EventDispatcher;
-use ESD\Core\Plugins\Event\ProcessEvent;
-use ESD\Core\Server\Process\Message\Message;
-use ESD\Core\Server\Process\Message\MessageProcessor;
-use ESD\Coroutine\Context\Context;
+use ESD\Core\Context\Context;
+use ESD\Core\Context\ContextBuilder;
+use ESD\Core\Context\ContextManager;
+use ESD\Core\Event\EventDispatcher;
+use ESD\Core\Event\EventMessageProcessor;
+use ESD\Core\Message\Message;
+use ESD\Core\Message\MessageProcessor;
 use ESD\Core\Server\Server;
-use Monolog\Logger;
-use Swoole\Coroutine\Socket;
-use Throwable;
+use Psr\Log\LoggerInterface;
 
 /**
  * 进程
  * Class Process
+ * @package ESD\Core\Server\process
  */
 abstract class Process
 {
@@ -84,12 +85,12 @@ abstract class Process
     protected $eventDispatcher;
 
     /**
-     * @var Socket
+     * @var \Swoole\Coroutine\Socket
      */
     private $socket;
 
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $log;
 
@@ -121,7 +122,12 @@ abstract class Process
             $this->processType = self::PROCESS_TYPE_CUSTOM;
         }
         $this->processName = $name;
-        $this->context = new Context($server->getContext());
+        //注册Process的ContextBuilder
+        $contextBuilder = ContextManager::getInstance()->getContextBuilder(ContextBuilder::PROCESS_CONTEXT,
+            function () {
+                return new ProcessContextBuilder($this);
+            });
+        $this->context = $contextBuilder->build();
     }
 
     /**
@@ -231,6 +237,7 @@ abstract class Process
 
     /**
      * 进程启动的回调
+     * @throws \ESD\Core\Exception
      */
     public function _onProcessStart()
     {
@@ -239,18 +246,16 @@ abstract class Process
         });
         $this->log = Server::$instance->getLog();
         $this->eventDispatcher = Server::$instance->getEventDispatcher();
+        //注册事件派发处理函数
+        MessageProcessor::addMessageProcessor(new EventMessageProcessor($this->eventDispatcher));
         try {
-            Context::registerContext(Context::PROCESS_CONTEXT, $this->context);
             Server::$isStart = true;
             if ($this->processName != null) {
                 $this->setName($this->processName);
             }
-            $this->getProcessManager()->setCurrentProcessId($this->processId);
+            $this->server->getProcessManager()->setCurrentProcessId($this->processId);
             $this->processPid = getmypid();
-            $this->getProcessManager()->setCurrentProcessPid($this->processPid);
-            //基础插件初始化
-            $this->server->getBasePlugManager()->beforeProcessStart($this->context);
-            $this->server->getBasePlugManager()->waitReady();
+            $this->server->getProcessManager()->setCurrentProcessPid($this->processPid);
             //用户插件初始化
             $this->server->getPlugManager()->beforeProcessStart($this->context);
             $this->server->getPlugManager()->waitReady();
@@ -272,7 +277,7 @@ abstract class Process
                         //获取进程id
                         $unpackData = unpack("N", $recv);
                         $processId = $unpackData[1];
-                        $fromProcess = $this->getProcessManager()->getProcessFromId($processId);
+                        $fromProcess = $this->server->getProcessManager()->getProcessFromId($processId);
                         go(function () use ($recv, $fromProcess) {
                             $this->_onPipeMessage(serverUnSerialize(substr($recv, 4)), $fromProcess);
                         });
@@ -283,7 +288,7 @@ abstract class Process
             //发出事件
             $this->eventDispatcher->dispatchEvent(new ProcessEvent(ProcessEvent::ProcessStartEvent, $this));
             $this->onProcessStart();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->log->error($e);
         }
     }
@@ -309,7 +314,7 @@ abstract class Process
             if (!MessageProcessor::dispatch($message)) {
                 $this->onPipeMessage($message, $fromProcess);
             }
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->log->error($e);
         }
     }
@@ -323,7 +328,7 @@ abstract class Process
             //发出事件
             $this->eventDispatcher->dispatchEvent(new ProcessEvent(ProcessEvent::ProcessStopEvent, $this));
             $this->onProcessStop();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             $this->log->error($e);
         }
         if ($this->swooleProcess != null) {
@@ -392,7 +397,7 @@ abstract class Process
      */
     public function getProcessManager(): ProcessManager
     {
-        return $this->server->getAbstractServer()->getProcessManager();
+        return $this->server->getProcessManager();
     }
 
     /**
@@ -409,19 +414,6 @@ abstract class Process
     }
 
     /**
-     * 是否是Cli环境
-     * @return bool
-     */
-    public static function isCli()
-    {
-        if (PHP_SAPI == "cli") {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Set process name.
      *
      * @param string $title
@@ -429,7 +421,7 @@ abstract class Process
      */
     public static function setProcessTitle($title)
     {
-        if (self::isDarwin() || !self::isCli()) {
+        if (self::isDarwin()) {
             return;
         }
         // >=php 5.5

@@ -2,21 +2,56 @@
 
 namespace ESD\ExampleClass;
 
-use ESD\Server\Co\CoServer;
 use ESD\Core\Exception;
 use ESD\Core\PlugIn\AbstractPlugin;
+use ESD\Core\Server\Config\ServerConfig;
 use ESD\Core\Server\Process\Process;
-use ESD\Core\Server\Server;
+use ESD\ExampleClass\Port\SwoolePort;
+use ESD\ExampleClass\Process\SwooleProcess;
+use ESD\Plugins\AnnotationsScan\AnnotationsScanPlugin;
+use ESD\Plugins\Aop\AopPlugin;
+use ESD\Plugins\Cache\CachePlugin;
+use ESD\Plugins\EasyRoute\EasyRoutePlugin;
+use ESD\Plugins\Mysql\MysqlPlugin;
+use ESD\Plugins\Pack\PackPlugin;
+use ESD\Plugins\Redis\RedisPlugin;
+use ESD\Plugins\Validate\ValidatePlugin;
+use ESD\Server\Co\CoServer;
+use ESD\Server\Swoole\SwooleServer;
 
-class SwooleApplication extends CoServer
+class SwooleApplication extends SwooleServer
 {
-
-    public function __construct(Server $server, string $defaultPortClass, string $defaultProcessClass)
+    /**
+     * SwooleApplication constructor.
+     * @param ServerConfig|null $serverConfig
+     * @param string $portClass
+     * @param string $processClass
+     * @throws Exception
+     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ReflectionException
+     * @throws \Exception
+     */
+    public function __construct(?ServerConfig $serverConfig = null,
+                                string $portClass = SwoolePort::class,
+                                string $processClass = SwooleProcess::class)
     {
-        parent::__construct($server, $defaultPortClass, $defaultProcessClass);
+        if ($serverConfig == null) {
+            $serverConfig = new ServerConfig();
+        }
+        parent::__construct($serverConfig, $portClass, $processClass);
 
-        //TODO add plugin
+        $this->getPlugManager()->addPlug(new CachePlugin());
+        $this->getPlugManager()->addPlug(new RedisPlugin());
+        $this->getPlugManager()->addPlug(new MysqlPlugin());
+        $this->getPlugManager()->addPlug(new PackPlugin());
+        $this->getPlugManager()->addPlug(new ValidatePlugin());
+        $this->getPlugManager()->addPlug(new AopPlugin());
+        $this->getPlugManager()->addPlug(new AnnotationsScanPlugin());
+        $this->getPlugManager()->addPlug(new EasyRoutePlugin());
+        $this->configure();
+        $this->start();
     }
+
 
     /**
      * @param AbstractPlugin $plugin
@@ -24,7 +59,7 @@ class SwooleApplication extends CoServer
      */
     public function addPlug(AbstractPlugin $plugin)
     {
-        $this->server->getPlugManager()->addPlug($plugin);
+        $this->getPlugManager()->addPlug($plugin);
     }
 
 

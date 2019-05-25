@@ -1,22 +1,28 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: 白猫
+ * Date: 2019/4/17
+ * Time: 14:10
+ */
 
 namespace ESD\Coroutine;
 
-
-use ArrayObject;
-use ESD\Coroutine\Context\Context;
+use ESD\Core\Context\Context;
+use ESD\Core\Context\ContextManager;
+use ESD\Core\Runtime;
 use ESD\Coroutine\Pool\Runnable;
-use Exception;
-use Iterator;
-use Swoole\Coroutine;
 
 class Co
 {
 
-    public static function isCoroutine()
+    /**
+     * 使能协程
+     */
+    public static function enableCo(): void
     {
-        return class_exists("\Swoole\Coroutine") && getenv('use_coroutine') == 1;
+        Runtime::$enableCo = true;
+        ContextManager::getInstance()->registerContext(new CoroutineContextBuilder());
     }
 
     /**
@@ -25,9 +31,7 @@ class Co
      */
     public static function set($data): void
     {
-        if (self::isCoroutine()) {
-            Coroutine::set($data);
-        }
+        \Swoole\Coroutine::set($data);
     }
 
     /**
@@ -36,25 +40,16 @@ class Co
      */
     public static function getStats(): array
     {
-        if (self::isCoroutine()) {
-            return Coroutine::stats();
-        } else {
-            return [];
-        }
+        return \Swoole\Coroutine::stats();
     }
 
     /**
      * 判断指定协程是否存在
-     * @param $coId
      * @return bool
      */
-    public static function exists($coId): bool
+    public static function isExist($coId): bool
     {
-        if (self::isCoroutine()) {
-            return Coroutine::exists($coId);
-        }else {
-            return false;
-        }
+        return \Swoole\Coroutine::isExist($coId);
     }
 
     /**
@@ -63,11 +58,7 @@ class Co
      */
     public static function getCid(): int
     {
-        if (self::isCoroutine()) {
-            return Coroutine::getCid();
-        }else {
-            return -1;
-        }
+        return \Swoole\Coroutine::getCid();
     }
 
     /**
@@ -76,27 +67,16 @@ class Co
      */
     public static function getPcid(): int
     {
-        if (self::isCoroutine()) {
-            return Coroutine::getPcid();
-        }else {
-            return -1;
-        }
+        return \Swoole\Coroutine::getPcid();
     }
 
     /**
      * 获取当前协程的上下文对象
-     * @return ArrayObject
+     * @return array
      */
     public static function getSwooleContext()
     {
-        if (self::isCoroutine()) {
-            return Coroutine::getContext();
-        }else {
-            if (Context::$instance == null) {
-                Context::$instance = new ArrayObject();
-            }
-            return Context::$instance;
-        }
+        return \Swoole\Coroutine::getContext();
     }
 
     /**
@@ -107,28 +87,27 @@ class Co
     {
         $result = self::getSwooleContext()[Context::storageKey] ?? null;
         if ($result == null) {
-            $parentContext = null;
-            foreach (Context::$contextStack as $context) {
-                $parentContext = $context;
-                break;
-            }
-            self::getSwooleContext()[Context::storageKey] = new Context($parentContext);
+            self::getSwooleContext()[Context::storageKey] = new Context(null);
         }
         return self::getSwooleContext()[Context::storageKey];
     }
 
     /**
+     * 获取当前协程的父级上下文
+     * @return Context|null
+     */
+    public static function getParentContext()
+    {
+        return self::getContext()->getParentContext();
+    }
+
+    /**
      * 遍历当前进程内的所有协程。
-     * @return Iterator
-     * @throws Exception
+     * @return \Iterator
      */
     public static function getListCoroutines()
     {
-        if (self::isCoroutine()) {
-            return Coroutine::listCoroutines();
-        } else {
-            throw new Exception("Co::getListCoroutines need running in coroutine environment");
-        }
+        return \Swoole\Coroutine::getListCoroutines();
     }
 
     /**
@@ -140,10 +119,7 @@ class Co
      */
     public static function getBackTrace(int $cid = 0, int $options = DEBUG_BACKTRACE_PROVIDE_OBJECT, int $limit = 0): array
     {
-        if (self::isCoroutine()) {
-            return Coroutine::getBackTrace($cid, $options, $limit);
-        }
-        return [];
+        return \Swoole\Coroutine::getBackTrace($cid, $options, $limit);
     }
 
     /**
@@ -151,9 +127,7 @@ class Co
      */
     public static function yield()
     {
-        if (self::isCoroutine()) {
-            Coroutine::yield();
-        }
+        \Swoole\Coroutine::yield();
     }
 
     /**
@@ -162,9 +136,7 @@ class Co
      */
     public static function sleep(float $se)
     {
-        if (self::isCoroutine()) {
-            Coroutine::sleep($se);
-        }
+        \Swoole\Coroutine::sleep($se);
     }
 
 
@@ -174,9 +146,7 @@ class Co
      */
     public static function resume(int $coroutineId)
     {
-        if (self::isCoroutine()) {
-            Coroutine::resume($coroutineId);
-        }
+        \Swoole\Coroutine::resume($coroutineId);
     }
 
     /**
@@ -186,20 +156,7 @@ class Co
      */
     public static function runTask($runnable)
     {
-        if (self::isCoroutine()) {
-            $cid = goWithContext(function () use ($runnable) {
-                if ($runnable != null) {
-                    if ($runnable instanceof Runnable) {
-                        $result = $runnable->run();
-                        $runnable->sendResult($result);
-                    }
-                    if (is_callable($runnable)) {
-                        $runnable();
-                    }
-                }
-            });
-            return $cid;
-        } else {
+        $cid = goWithContext(function () use ($runnable) {
             if ($runnable != null) {
                 if ($runnable instanceof Runnable) {
                     $result = $runnable->run();
@@ -209,8 +166,8 @@ class Co
                     $runnable();
                 }
             }
-            return 0;
-        }
-
+        });
+        return $cid;
     }
+
 }

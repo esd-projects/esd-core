@@ -3,12 +3,10 @@
 
 namespace ESD\ExampleClass\Port;
 
-
-
 use ESD\Core\Server\Beans\Request;
 use ESD\Core\Server\Beans\Response;
-use ESD\Server\Co\Port\ServerPort;
 use ESD\Core\Server\Beans\WebSocketFrame;
+use ESD\Core\Server\Port\ServerPort;
 
 class SwoolePort extends ServerPort
 {
@@ -51,5 +49,10 @@ class SwoolePort extends ServerPort
     public function onWsOpen(Request $request)
     {
         // TODO: Implement onWsOpen() method.
+    }
+
+    public function onWsClose(int $fd, int $reactorId)
+    {
+        // TODO: Implement onWsClose() method.
     }
 }

@@ -1,16 +1,16 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: 白猫
+ * Date: 2019/4/16
+ * Time: 17:46
+ */
 
 namespace ESD\Core\Server\Process;
 
 
-use Exception;
-use ESD\Core\Exception\ConfigException;
-use ESD\Core\Server\ServerProcess\ManagerProcess;
-use ESD\Core\Server\ServerProcess\MasterProcess;
 use ESD\Core\Server\Config\ProcessConfig;
 use ESD\Core\Server\Server;
-use ReflectionException;
 
 class ProcessManager
 {
@@ -86,7 +86,6 @@ class ProcessManager
 
     /**
      * 合并配置
-     * @throws ConfigException
      */
     public function mergeConfig()
     {
@@ -97,8 +96,8 @@ class ProcessManager
 
     /**
      * @return ProcessConfig[]
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws Exception\ConfigException
+     * @throws \ReflectionException
      */
     public function getCustomProcessConfigs(): array
     {
@@ -124,8 +123,8 @@ class ProcessManager
      * @param string $processClass
      * @param string $groupName
      * @return ProcessConfig
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws Exception\ConfigException
+     * @throws \ReflectionException
      */
     public function addCustomProcessesConfig(string $name, $processClass, string $groupName)
     {
@@ -136,13 +135,13 @@ class ProcessManager
 
     /**
      * 构建进程
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws Exception\ConfigException
+     * @throws \ReflectionException
      */
     public function createProcess()
     {
         //配置默认工作进程
-        $serverConfig = Server::$instance->getServerConfig();
+        $serverConfig = $this->server->getServerConfig();
         for ($i = 0; $i < $serverConfig->getWorkerNum(); $i++) {
             $defaultProcessClass = $this->getDefaultProcessClass();
             $process = new $defaultProcessClass($this->server, $i, "worker-" . $i, Process::WORKER_GROUP);
@@ -168,7 +167,7 @@ class ProcessManager
     {
         if ($process->getProcessType() == Process::PROCESS_TYPE_CUSTOM) {
             $process->createProcess();
-            Server::$instance->getAbstractServer()->getServer()->addProcess($process->getSwooleProcess());
+            $this->server->getServer()->addProcess($process->getSwooleProcess());
         }
         $this->processes[$process->getProcessId()] = $process;
     }
@@ -209,7 +208,7 @@ class ProcessManager
      */
     public function getMasterPid()
     {
-        return Server::$instance->getAbstractServer()->getServer()->master_pid ?? null;
+        return $this->server->getServer()->master_pid ?? null;
     }
 
     /**
@@ -218,7 +217,7 @@ class ProcessManager
      */
     public function getManagerPid()
     {
-        return Server::$instance->getAbstractServer()->getServer()->manager_pid ?? null;
+        return $this->server->getServer()->manager_pid ?? null;
     }
 
     /**
@@ -227,7 +226,7 @@ class ProcessManager
      */
     public function getCurrentProcessId()
     {
-        return Server::$instance->getAbstractServer()->getServer()->worker_id ?? null;
+        return $this->server->getServer()->worker_id ?? null;
     }
 
     /**
@@ -235,7 +234,7 @@ class ProcessManager
      */
     public function setCurrentProcessId($processId)
     {
-        Server::$instance->getAbstractServer()->getServer()->worker_id = $processId;
+        $this->server->getServer()->worker_id = $processId;
     }
 
     /**
@@ -245,7 +244,7 @@ class ProcessManager
      */
     public function getCurrentProcessPid()
     {
-        return Server::$instance->getAbstractServer()->getServer()->worker_pid;
+        return $this->server->getServer()->worker_pid;
     }
 
     /**
@@ -253,7 +252,7 @@ class ProcessManager
      */
     public function setCurrentProcessPid($processPid)
     {
-        Server::$instance->getAbstractServer()->getServer()->worker_pid = $processPid;
+        $this->server->getServer()->worker_pid = $processPid;
     }
 
     /**
@@ -279,13 +278,13 @@ class ProcessManager
      * 发送消息到进程组中，轮询
      * @param $message
      * @param string $groupName
-     * @throws Exception
+     * @throws \Exception
      */
     public function sendMessageToGroup($message, string $groupName)
     {
         $group = $this->getProcessGroup($groupName);
         if ($group == null) {
-            throw new Exception("没有$groupName 进程组");
+            throw new \Exception("没有$groupName 进程组");
         }
         $group->sendMessageToGroup($message);
     }

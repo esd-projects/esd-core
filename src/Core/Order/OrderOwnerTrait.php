@@ -8,6 +8,7 @@
 
 namespace ESD\Core\Order;
 
+
 use ESD\Core\Exception;
 
 trait OrderOwnerTrait
@@ -52,7 +53,7 @@ trait OrderOwnerTrait
                 $order->addAfterOrder($afterOrder);
             }
         }
-        usort($this->orderList, function (Order $a, Order $b) {
+        usort($this->orderList, function ($a, $b) {
             if ($a->getOrderIndex($a, 0) > $b->getOrderIndex($b, 0)) {
                 return 1;
             } else {

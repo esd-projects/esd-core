@@ -13,8 +13,9 @@ use ESD\Core\Exception;
 /**
  * HTTP请求对象
  * Class Request
+ * @package ESD\Core\Server\Beans
  */
-abstract class Request
+class Request
 {
     const HEADER_HOST = "host";
     const HEADER_CONNECTION = "connection";
@@ -38,10 +39,9 @@ abstract class Request
 
     /**
      * swoole的原始对象
-     * @var \Swoole\Http\Request
+     * @var Swoole\Http\Request
      */
-    protected $swooleRequest;
-
+    private $swooleRequest;
     public $header;
     public $server;
     public $get;
@@ -51,13 +51,21 @@ abstract class Request
     public $fd;
     public $streamId;
 
-    public function __construct()
+    public function __construct($swooleRequest)
     {
-
+        $this->swooleRequest = $swooleRequest;
+        $this->header = $this->swooleRequest->header;
+        $this->server = $this->swooleRequest->server;
+        $this->get = $this->swooleRequest->get;
+        $this->post = $this->swooleRequest->post;
+        $this->cookie = $this->swooleRequest->cookie;
+        $this->files = $this->swooleRequest->files;
+        $this->fd = $this->swooleRequest->fd;
+        $this->streamId = $this->swooleRequest->streamId;
     }
 
     /**
-     * @return \Swoole\Http\Request
+     * @return mixed
      */
     public function getSwooleRequest()
     {
@@ -68,7 +76,19 @@ abstract class Request
      * 获取原始的POST包体，用于非application/x-www-form-urlencoded格式的Http POST请求。
      * @return string
      */
-    abstract public function getRawContent(): string;
+    public function getRawContent(): string
+    {
+        return $this->swooleRequest->rawContent();
+    }
+
+    /**
+     * 获取完整的原始Http请求报文。包括Http Header和Http Body
+     * @return string
+     */
+    public function getData(): string
+    {
+        return $this->swooleRequest->getData();
+    }
 
     /**
      * @param string $key
@@ -90,7 +110,6 @@ abstract class Request
 
     /**
      * @param string $key
-     * @param null $default
      * @return string|null
      */
     public function getCookie(string $key, $default = null)
@@ -213,5 +232,14 @@ abstract class Request
             throw new Exception("缺少参数$key");
         }
         return $result;
+    }
+
+    /**
+     * 获取requestBody
+     * @return mixed|null
+     */
+    public function getJsonBody()
+    {
+        return json_decode($this->getRawContent(), true);
     }
 }

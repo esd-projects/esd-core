@@ -8,15 +8,14 @@
 
 namespace ESD\Core\Server\Config;
 
-use ESD\Core\Exception\ConfigException;
-use ESD\Core\Plugins\Config\BaseConfig;
+use ESD\Core\Config\BaseConfig;
+use ESD\Core\Config\ConfigException;
 use ESD\Core\Server\Process\Process;
-use ReflectionException;
 
 /**
  * 进程配置
  * Class ProcessConfig
- * @package ESD\BaseServer\Co\Config
+ * @package ESD\Core\Server\Config
  */
 class ProcessConfig extends BaseConfig
 {
@@ -31,7 +30,7 @@ class ProcessConfig extends BaseConfig
      * @param $className
      * @param string $groupName
      * @throws ConfigException
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function __construct($className = null, $name = null, $groupName = Process::DEFAULT_GROUP)
     {

@@ -8,13 +8,13 @@
 
 namespace ESD\Core\Server\Config;
 
-use ESD\Core\Exception\ConfigException;
-use ESD\Core\Plugins\Config\BaseConfig;
+use ESD\Core\Config\BaseConfig;
+use ESD\Core\Config\ConfigException;
 
 /**
  * 端口配置
  * Class PortConfig
- * @package ESD\BaseServer\Co\Config
+ * @package ESD\Core\Server\Config
  */
 class PortConfig extends BaseConfig
 {
@@ -795,7 +795,6 @@ class PortConfig extends BaseConfig
 
     /**
      * 获取类型名称
-     * @throws ConfigException
      */
     public function getTypeName()
     {

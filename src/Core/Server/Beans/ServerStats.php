@@ -11,7 +11,7 @@ namespace ESD\Core\Server\Beans;
 /**
  * 服务器状态
  * Class ServerStats
- * @package ESD\BaseServer\Co\Beans
+ * @package ESD\Core\Server\Beans
  */
 class ServerStats
 {

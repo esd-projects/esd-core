@@ -4,15 +4,14 @@
 namespace ESD\ExampleClass\Process;
 
 
-use ESD\Core\Plugins\Logger\Logger;
-use ESD\Core\Server\Process\Message\Message;
+use ESD\Core\Message\Message;
 use ESD\Core\Server\Process\Process;
-use ESD\Core\Server\Server;
+use Psr\Log\LoggerInterface;
 
 class SwooleProcess extends Process
 {
     /**
-     * @var Logger
+     * @var LoggerInterface
      */
     protected $log;
     /**
@@ -21,7 +20,7 @@ class SwooleProcess extends Process
      */
     public function init()
     {
-        $this->log = Server::$instance->getLog();
+        $this->log = DIGet(LoggerInterface::class);
     }
 
     public function onProcessStart()

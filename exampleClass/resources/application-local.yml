@@ -1,3 +1,18 @@
 aop:
   include_paths:
-    - /mnt/c/Users/administrato/PhpstormProjects/go-swoole/examples/src
+    - /Users/lidanyang/project/esd-projects/esd-core/exampleClass/src
+scan:
+  include_paths:
+    examples: /Users/lidanyang/project/esd-projects/esd-core/exampleClass/src
+
+mysql:
+  default:
+    host: '127.0.0.1'
+    username: 'root'
+    password: '123456'
+    db: 'oreiex'
+    prefix: "t_"
+
+redis:
+  default:
+    host: '127.0.0.1'

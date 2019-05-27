@@ -149,6 +149,7 @@ class ProcessManager
         for ($i = 0; $i < $serverConfig->getWorkerNum(); $i++) {
             $defaultProcessClass = $this->getDefaultProcessClass();
             $process = new $defaultProcessClass($this->server, $i, "worker-" . $i, Process::WORKER_GROUP);
+            Server::$instance->getContainer()->injectOn($process);
             $this->addProcesses($process);
         }
         $startId = $serverConfig->getWorkerNum();
@@ -158,6 +159,7 @@ class ProcessManager
         foreach ($this->customProcessConfigs as $processConfig) {
             $processClass = $processConfig->getClassName();
             $process = new $processClass($this->server, $startId, $processConfig->getName(), $processConfig->getGroupName());
+            Server::$instance->getContainer()->injectOn($process);
             $this->addProcesses($process);
             $startId++;
         }

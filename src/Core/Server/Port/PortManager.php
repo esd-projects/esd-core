@@ -121,6 +121,7 @@ class PortManager
             if (!$serverPort instanceof ServerPort) {
                 throw new ConfigException("端口实例必须继承ServerPort");
             }
+            Server::$instance->getContainer()->injectOn($serverPort);
             $this->ports[$portConfig->getPort()] = $serverPort;
             $this->namePorts[$portConfig->getName()] = $serverPort;
         }

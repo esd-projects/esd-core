@@ -6,16 +6,25 @@
  * Time: 10:21
  */
 
-namespace ESD\Core\Logger;
+namespace ESD\Core\Plugins\Logger;
 
 use ESD\Core\Server\Server;
+use Monolog\Logger;
 
 /**
  * 帮助获取logger实例
  * Class GetLogger
+ * @package ESD\Core\Plugins\Logger
  */
 trait GetLogger
 {
+    /**
+     * @param $level
+     * @param $message
+     * @param array $context
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function log($level, $message, array $context = array())
     {
         Server::$instance->getLog()->log($level, $message, $context);
@@ -29,10 +38,27 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function debug($message, array $context = array())
     {
-        Server::$instance->getLog()->debug($message, $context);
+        $this->addRecord(Logger::DEBUG, $message, $context);
+    }
+
+    /**
+     * Adds a log record.
+     *
+     * @param  int $level The logging level
+     * @param  string $message The log message
+     * @param  array $context The log context
+     * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function addRecord($level, $message, array $context = array())
+    {
+        Server::$instance->getLog()->log($level, $message, $context);
     }
 
     /**
@@ -43,10 +69,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function info($message, array $context = array())
     {
-        Server::$instance->getLog()->info($message, $context);
+        $this->addRecord(Logger::INFO, $message, $context);
     }
 
     /**
@@ -57,10 +85,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function notice($message, array $context = array())
     {
-        Server::$instance->getLog()->notice($message, $context);
+        $this->addRecord(Logger::NOTICE, $message, $context);
     }
 
     /**
@@ -71,10 +101,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function warn($message, array $context = array())
     {
-        Server::$instance->getLog()->warning($message, $context);
+        $this->addRecord(Logger::WARNING, $message, $context);
     }
 
     /**
@@ -85,10 +117,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function warning($message, array $context = array())
     {
-        Server::$instance->getLog()->warning($message, $context);
+        $this->addRecord(Logger::WARNING, $message, $context);
     }
 
     /**
@@ -99,10 +133,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function err($message, array $context = array())
     {
-        Server::$instance->getLog()->error($message, $context);
+        $this->addRecord(Logger::ERROR, $message, $context);
     }
 
     /**
@@ -113,10 +149,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function error($message, array $context = array())
     {
-        Server::$instance->getLog()->error($message, $context);
+        $this->addRecord(Logger::ERROR, $message, $context);
     }
 
     /**
@@ -127,10 +165,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function crit($message, array $context = array())
     {
-        Server::$instance->getLog()->critical($message, $context);
+        $this->addRecord(Logger::CRITICAL, $message, $context);
     }
 
     /**
@@ -141,10 +181,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function critical($message, array $context = array())
     {
-        Server::$instance->getLog()->critical($message, $context);
+        $this->addRecord(Logger::CRITICAL, $message, $context);
     }
 
     /**
@@ -155,10 +197,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function alert($message, array $context = array())
     {
-        Server::$instance->getLog()->alert($message, $context);
+        $this->addRecord(Logger::ALERT, $message, $context);
     }
 
     /**
@@ -169,10 +213,12 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function emerg($message, array $context = array())
     {
-        Server::$instance->getLog()->emergency($message, $context);
+        $this->addRecord(Logger::EMERGENCY, $message, $context);
     }
 
     /**
@@ -183,9 +229,11 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function emergency($message, array $context = array())
     {
-        Server::$instance->getLog()->emergency($message, $context);
+        $this->addRecord(Logger::EMERGENCY, $message, $context);
     }
 }

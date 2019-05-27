@@ -96,7 +96,9 @@ class ProcessManager
 
     /**
      * @return ProcessConfig[]
-     * @throws Exception\ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ReflectionException
      */
     public function getCustomProcessConfigs(): array
@@ -123,8 +125,8 @@ class ProcessManager
      * @param string $processClass
      * @param string $groupName
      * @return ProcessConfig
-     * @throws Exception\ConfigException
      * @throws \ReflectionException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      */
     public function addCustomProcessesConfig(string $name, $processClass, string $groupName)
     {
@@ -135,7 +137,9 @@ class ProcessManager
 
     /**
      * 构建进程
-     * @throws Exception\ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ReflectionException
      */
     public function createProcess()

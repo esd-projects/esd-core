@@ -9,8 +9,8 @@
 namespace ESD\Plugins\Aop;
 
 
-use ESD\Core\Config\BaseConfig;
-use ESD\Core\Config\ConfigException;
+use ESD\Core\Plugins\Config\BaseConfig;
+use ESD\Core\Plugins\Config\ConfigException;
 
 class AopConfig extends BaseConfig
 {

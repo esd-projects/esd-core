@@ -9,7 +9,7 @@
 namespace ESD\Plugins\Aop;
 
 use Doctrine\Common\Annotations\CachedReader;
-use ESD\Core\Config\ConfigException;
+use ESD\Core\Plugins\Config\ConfigException;
 use ESD\Core\Context\Context;
 use ESD\Core\Exception;
 use ESD\Core\PlugIn\AbstractPlugin;

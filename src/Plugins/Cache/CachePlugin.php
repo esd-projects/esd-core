@@ -10,7 +10,7 @@ namespace ESD\Plugins\Cache;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use ESD\Core\Config\ConfigException;
+use ESD\Core\Plugins\Config\ConfigException;
 use ESD\Core\Context\Context;
 use ESD\Core\Exception;
 use ESD\Core\PlugIn\AbstractPlugin;

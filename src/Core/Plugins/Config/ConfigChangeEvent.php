@@ -6,9 +6,10 @@
  * Time: 18:35
  */
 
-namespace ESD\Core\Config;
+namespace ESD\Core\Plugins\Config;
 
-use ESD\Core\Event\Event;
+
+use ESD\Core\Plugins\Event\Event;
 
 class ConfigChangeEvent extends Event
 {

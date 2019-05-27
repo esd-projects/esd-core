@@ -6,8 +6,7 @@
  * Time: 9:46
  */
 
-namespace ESD\Core\Config;
-
+namespace ESD\Core\Plugins\Config;
 
 use ESD\Core\Server\Server;
 use ReflectionClass;
@@ -15,7 +14,7 @@ use ReflectionClass;
 /**
  * 配置的基础类，命名为驼峰
  * Class BaseConfig
- * @package ESD\BaseServer\Plugins\Config
+ * @package ESD\Core\Plugins\Config
  */
 class BaseConfig
 {
@@ -70,7 +69,7 @@ class BaseConfig
         }
         $config = $this->toConfigArray();
         //添加到配置上下文中
-        Server::$instance->getConfigContext()->appendDeepConfig($this->config, ConfigStarter::ConfigDeep);
+        Server::$instance->getConfigContext()->appendDeepConfig($this->config, ConfigPlugin::ConfigDeep);
         //合并回配置
         $this->config = Server::$instance->getConfigContext()->get($prefix);
         $this->buildFromConfig($this->config);

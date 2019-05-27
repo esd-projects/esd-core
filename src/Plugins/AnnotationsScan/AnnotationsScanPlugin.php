@@ -13,7 +13,7 @@ use DI\DependencyException;
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\CachedReader;
 use ESD\Core\Exception;
-use ESD\Core\Logger\GetLogger;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Context\Context;
 use ESD\Core\PlugIn\AbstractPlugin;
 use ESD\Core\PlugIn\PluginInterfaceManager;

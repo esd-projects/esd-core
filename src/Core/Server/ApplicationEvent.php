@@ -8,7 +8,8 @@
 
 namespace ESD\Core\Server;
 
-use ESD\Core\Event\Event;
+
+use ESD\Core\Plugins\Event\Event;
 
 class ApplicationEvent extends Event
 {

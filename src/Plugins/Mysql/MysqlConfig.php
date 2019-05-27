@@ -9,7 +9,7 @@
 namespace ESD\Plugins\Mysql;
 
 
-use ESD\Core\Config\BaseConfig;
+use ESD\Core\Plugins\Config\BaseConfig;
 
 class MysqlConfig extends BaseConfig
 {

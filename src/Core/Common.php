@@ -190,6 +190,13 @@ function clearDir($path = null)
     }
 }
 
+/**
+ * @param $name
+ * @param array $params
+ * @return mixed
+ * @throws \DI\DependencyException
+ * @throws \DI\NotFoundException
+ */
 function DIGet($name, $params = [])
 {
     $result = DI::getInstance()->getContainer()->get($name);

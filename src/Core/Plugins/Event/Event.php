@@ -6,12 +6,12 @@
  * Time: 9:28
  */
 
-namespace ESD\Core\Event;
+namespace ESD\Core\Plugins\Event;
 
 /**
  * 本进程内的事件
  * Class Event
- * @package ESD\BaseServer\Plugins\Event
+ * @package ESD\Core\Plugins\Event
  */
 class Event
 {

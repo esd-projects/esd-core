@@ -8,7 +8,7 @@
 
 namespace ESD\Plugins\Pack\PackTool;
 
-use ESD\Core\Logger\GetLogger;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Server\Config\PortConfig;
 use ESD\Plugins\Pack\ClientData;
 
@@ -58,7 +58,7 @@ class EofJsonPack extends AbstractPack
      * @param string $data
      * @param PortConfig $portConfig
      * @return mixed
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      */
     public function unPack(int $fd, string $data, PortConfig $portConfig): ?ClientData
     {

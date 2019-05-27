@@ -9,7 +9,7 @@
 namespace ESD\Plugins\AnnotationsScan;
 
 
-use ESD\Core\Config\BaseConfig;
+use ESD\Core\Plugins\Config\BaseConfig;
 
 class AnnotationsScanConfig extends BaseConfig
 {

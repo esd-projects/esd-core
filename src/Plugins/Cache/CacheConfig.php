@@ -9,7 +9,7 @@
 namespace ESD\Plugins\Cache;
 
 
-use ESD\Core\Config\BaseConfig;
+use ESD\Core\Plugins\Config\BaseConfig;
 
 class CacheConfig extends BaseConfig
 {

@@ -6,7 +6,7 @@
  * Time: 9:20
  */
 
-namespace ESD\Core\Event;
+namespace ESD\Core\Plugins\Event;
 
 use ESD\Core\Server\Process\Process;
 use ESD\Core\Server\Server;
@@ -37,6 +37,8 @@ class EventDispatcher
      * @param EventCall|null $eventCall
      * @param bool $once 是否仅仅一次
      * @return EventCall
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function listen($type, ?EventCall $eventCall = null, $once = false): EventCall
     {

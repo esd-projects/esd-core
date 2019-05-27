@@ -6,16 +6,16 @@
  * Time: 14:55
  */
 
-namespace ESD\Core\Config;
+namespace ESD\Core\Plugins\Config;
 
-use ESD\Core\Event\EventDispatcher;
+use ESD\Core\Plugins\Event\EventDispatcher;
 use ESD\Core\Server\Server;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * 具有层级关系的配置
  * Class ConfigContext
- * @package ESD\BaseServer\Plugins\Config
+ * @package ESD\Core\Plugins\Config
  */
 class ConfigContext
 {

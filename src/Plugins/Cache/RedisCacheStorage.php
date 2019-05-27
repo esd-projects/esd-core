@@ -9,7 +9,7 @@
 namespace ESD\Plugins\Cache;
 
 
-use ESD\Core\Logger\GetLogger;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Plugins\Redis\GetRedis;
 
 class RedisCacheStorage implements CacheStorage

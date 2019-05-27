@@ -9,7 +9,7 @@
 namespace ESD\Core\Server\Port;
 
 
-use ESD\Core\Config\ConfigException;
+use ESD\Core\Plugins\Config\ConfigException;
 use ESD\Core\Server\Config\PortConfig;
 use ESD\Core\Server\Server;
 
@@ -60,6 +60,8 @@ class PortManager
     /**
      * 合并配置
      * @throws ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function mergeConfig()
     {
@@ -73,6 +75,8 @@ class PortManager
      * 获取配置
      * @return PortConfig[]
      * @throws ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \ReflectionException
      */
     public function getPortConfigs()
@@ -93,6 +97,8 @@ class PortManager
     /**
      * 创建端口实例
      * @throws ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \ReflectionException
      */
     public function createPorts()

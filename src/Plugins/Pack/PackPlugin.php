@@ -55,7 +55,7 @@ class PackPlugin extends AbstractPlugin
      * @return mixed|void
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ESD\Core\Exception
      * @throws \ReflectionException
      */

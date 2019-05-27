@@ -17,9 +17,8 @@ use ESD\Plugins\Pack\PackPlugin;
 use ESD\Plugins\Redis\RedisPlugin;
 use ESD\Plugins\Validate\ValidatePlugin;
 use ESD\Server\Co\CoServer;
-use ESD\Server\Swoole\SwooleServer;
 
-class SwooleApplication extends SwooleServer
+class SwooleApplication extends CoServer
 {
     /**
      * SwooleApplication constructor.
@@ -27,7 +26,6 @@ class SwooleApplication extends SwooleServer
      * @param string $portClass
      * @param string $processClass
      * @throws Exception
-     * @throws \ESD\Core\Config\ConfigException
      * @throws \ReflectionException
      * @throws \Exception
      */

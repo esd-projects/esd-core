@@ -6,7 +6,7 @@
  * Time: 10:42
  */
 
-namespace ESD\Core\Event;
+namespace ESD\Core\Plugins\Event;
 
 
 use ESD\Core\Message\Message;

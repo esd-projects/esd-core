@@ -8,7 +8,7 @@
 
 namespace ESD\Plugins\Mysql;
 
-use ESD\Core\Logger\GetLogger;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Context\Context;
 use ESD\Core\PlugIn\AbstractPlugin;
 use ESD\Core\Server\Server;
@@ -55,7 +55,7 @@ class MysqlPlugin extends AbstractPlugin
     /**
      * 在服务启动前
      * @param Context $context
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      */
     public function beforeServerStart(Context $context)
     {

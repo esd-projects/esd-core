@@ -9,15 +9,18 @@
 namespace ESD\Core\Server;
 
 use DI\Container;
-use ESD\Core\Config\ConfigContext;
-use ESD\Core\Config\ConfigException;
-use ESD\Core\Config\ConfigStarter;
 use ESD\Core\Context\Context;
 use ESD\Core\Context\ContextBuilder;
 use ESD\Core\Context\ContextManager;
 use ESD\Core\DI\DI;
-use ESD\Core\Event\EventDispatcher;
+use ESD\Core\Log\Log;
 use ESD\Core\PlugIn\PluginInterfaceManager;
+use ESD\Core\Plugins\Config\ConfigContext;
+use ESD\Core\Plugins\Config\ConfigException;
+use ESD\Core\Plugins\Config\ConfigPlugin;
+use ESD\Core\Plugins\Event\EventDispatcher;
+use ESD\Core\Plugins\Event\EventPlugin;
+use ESD\Core\Plugins\Logger\LoggerPlugin;
 use ESD\Core\Server\Beans\ClientInfo;
 use ESD\Core\Server\Beans\Request;
 use ESD\Core\Server\Beans\RequestProxy;
@@ -85,6 +88,10 @@ abstract class Server
      */
     protected $plugManager;
 
+    /**
+     * @var PluginInterfaceManager
+     */
+    protected $basePlugManager;
 
     /**
      * 是否已配置
@@ -98,21 +105,6 @@ abstract class Server
     protected $context;
 
     /**
-     * @var EventDispatcher
-     */
-    protected $eventDispatcher;
-
-    /**
-     * @var ConfigContext
-     */
-    protected $configContext;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $log;
-
-    /**
      * @var Container
      */
     protected $container;
@@ -124,13 +116,18 @@ abstract class Server
      * @param string $defaultPortClass
      * @param string $defaultProcessClass
      * @throws \ESD\Core\Exception
+     * @throws \Exception
      */
     public function __construct(ServerConfig $serverConfig, string $defaultPortClass, string $defaultProcessClass)
     {
         self::$instance = $this;
         $this->serverConfig = $serverConfig;
         //获取DI容器
-        $this->container = DI::getInstance($this->serverConfig)->getContainer();
+        $this->container = DI::getInstance()->getContainer();
+        //设置默认Log
+        DI::getInstance()->getContainer()->set(LoggerInterface::class, new Log());
+        $this->container->set(Server::class, $this);
+        $this->container->set(ServerConfig::class, $this->serverConfig);
         date_default_timezone_set('Asia/Shanghai');
         //注册Process的ContextBuilder
         $contextBuilder = ContextManager::getInstance()->getContextBuilder(ContextBuilder::SERVER_CONTEXT,
@@ -138,34 +135,26 @@ abstract class Server
                 return new ServerContextBuilder($this);
             });
         $this->context = $contextBuilder->build();
-        //初始化Event
-        $this->eventDispatcher = new EventDispatcher($this);
-        //初始化Config
-        $configStarter = new ConfigStarter();
-        $this->configContext = $configStarter->getConfigContext();
+        //合并ServerConfig配置
         $this->serverConfig->merge();
-        //初始化Logger
-        $this->log = DIGet(LoggerInterface::class);
         //-------------------------------------------------------------------------------------
         $this->portManager = new PortManager($this, $defaultPortClass);
         $this->processManager = new ProcessManager($this, $defaultProcessClass);
+        $this->basePlugManager = new PluginInterfaceManager($this);
+        //初始化默认插件添加Config/Logger/Event插件
+        $this->basePlugManager->addPlug(new ConfigPlugin());
+        $this->basePlugManager->addPlug(new LoggerPlugin());
+        $this->basePlugManager->addPlug(new EventPlugin());
+        $this->basePlugManager->order();
+        $this->basePlugManager->init($this->context);
+        $this->basePlugManager->beforeServerStart($this->context);
         //配置DI容器
-        $this->container->set(LoggerInterface::class, $this->log);
-        $this->container->set(EventDispatcher::class, $this->eventDispatcher);
-        $this->container->set(ConfigContext::class, $this->configContext);
-        $this->container->set(PortManager::class, $this->portManager);
-        $this->container->set(ProcessManager::class, $this->processManager);
         $this->container->set(Response::class, new ResponseProxy());
         $this->container->set(Request::class, new RequestProxy());
-        //设置Context
-        $this->context->add("Logger", $this->log);
-        $this->context->add("EventDispatcher", $this->eventDispatcher);
-        $this->context->add("ConfigContext", $this->configContext);
         set_exception_handler(function ($e) {
-            $this->log->error($e);
+            $this->getLog()->error($e);
         });
         print_r($serverConfig->getBanner() . "\n");
-
         //获取上面这些后才能初始化plugManager
         $this->plugManager = new PluginInterfaceManager($this);
         $this->container->set(PluginInterfaceManager::class, $this->getPlugManager());
@@ -206,6 +195,8 @@ abstract class Server
      * 添加插件和添加配置只能在configure之前
      * 配置服务
      * @throws ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      * @throws \ESD\Core\Exception
      * @throws \ReflectionException
      */
@@ -299,7 +290,7 @@ abstract class Server
         $this->processManager->createProcess();
         $this->configureReady();
         //打印配置
-        $this->log->debug("打印配置:\n" . $this->configContext->getCacheContainYaml());
+        $this->getLog()->debug("打印配置:\n" . $this->getConfigContext()->getCacheContainYaml());
     }
 
     /**
@@ -310,45 +301,62 @@ abstract class Server
 
     /**
      * 启动
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onStart()
     {
         Server::$isStart = true;
         //发送ApplicationStartingEvent事件
-        $this->eventDispatcher->dispatchEvent(new ApplicationEvent(ApplicationEvent::ApplicationStartingEvent, $this));
+        $this->getEventDispatcher()->dispatchEvent(new ApplicationEvent(ApplicationEvent::ApplicationStartingEvent, $this));
         $this->processManager->getMasterProcess()->onProcessStart();
         try {
             $this->onStart();
         } catch (\Throwable $e) {
-            $this->log->error($e);
+            $this->getLog()->error($e);
         }
     }
 
     /**
      * 关闭
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onShutdown()
     {
         //发送ApplicationShutdownEvent事件
-        $this->eventDispatcher->dispatchEvent(new ApplicationEvent(ApplicationEvent::ApplicationShutdownEvent, $this));
+        $this->getEventDispatcher()->dispatchEvent(new ApplicationEvent(ApplicationEvent::ApplicationShutdownEvent, $this));
         try {
             $this->onShutdown();
         } catch (\Throwable $e) {
-            $this->log->error($e);
+            $this->getLog()->error($e);
         }
     }
 
+    /**
+     * @param $serv
+     * @param int $worker_id
+     * @param int $worker_pid
+     * @param int $exit_code
+     * @param int $signal
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function _onWorkerError($serv, int $worker_id, int $worker_pid, int $exit_code, int $signal)
     {
         $process = $this->processManager->getProcessFromId($worker_id);
-        $this->log->alert("workerId:$worker_id exitCode:$exit_code signal:$signal");
+        $this->getLog()->alert("workerId:$worker_id exitCode:$exit_code signal:$signal");
         try {
             $this->onWorkerError($process, $exit_code, $signal);
         } catch (\Throwable $e) {
-            $this->log->error($e);
+            $this->getLog()->error($e);
         }
     }
 
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function _onManagerStart()
     {
         Server::$isStart = true;
@@ -356,20 +364,29 @@ abstract class Server
         try {
             $this->onManagerStart();
         } catch (\Throwable $e) {
-            $this->log->error($e);
+            $this->getLog()->error($e);
         }
     }
 
+    /**
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
     public function _onManagerStop()
     {
         $this->processManager->getManagerProcess()->onProcessStop();
         try {
             $this->onManagerStop();
         } catch (\Throwable $e) {
-            $this->log->error($e);
+            $this->getLog()->error($e);
         }
     }
 
+    /**
+     * @param $server
+     * @param int $worker_id
+     * @throws \ESD\Core\Exception
+     */
     public function _onWorkerStart($server, int $worker_id)
     {
         Server::$isStart = true;
@@ -400,6 +417,7 @@ abstract class Server
 
     /**
      * 启动服务
+     * @throws \Exception
      */
     public function start()
     {
@@ -729,10 +747,12 @@ abstract class Server
 
     /**
      * @return EventDispatcher
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function getEventDispatcher(): EventDispatcher
     {
-        return $this->eventDispatcher;
+        return DIGet(EventDispatcher::class);
     }
 
     /**
@@ -745,18 +765,22 @@ abstract class Server
 
     /**
      * @return LoggerInterface
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function getLog(): LoggerInterface
     {
-        return $this->log;
+        return DIGet(LoggerInterface::class);
     }
 
     /**
      * @return ConfigContext
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function getConfigContext(): ConfigContext
     {
-        return $this->configContext;
+        return DIGet(ConfigContext::class);
     }
 
     /**
@@ -765,5 +789,13 @@ abstract class Server
     public function getContainer(): ?Container
     {
         return $this->container;
+    }
+
+    /**
+     * @return PluginInterfaceManager
+     */
+    public function getBasePlugManager(): PluginInterfaceManager
+    {
+        return $this->basePlugManager;
     }
 }

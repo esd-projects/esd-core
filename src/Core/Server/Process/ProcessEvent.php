@@ -8,8 +8,7 @@
 
 namespace ESD\Core\Server\Process;
 
-
-use ESD\Core\Event\Event;
+use ESD\Core\Plugins\Event\Event;
 
 class ProcessEvent extends Event
 {

@@ -10,11 +10,11 @@ namespace ESD\Core\PlugIn;
 
 use ESD\Core\Channel\Channel;
 use ESD\Core\Context\Context;
-use ESD\Core\Event\EventDispatcher;
 use ESD\Core\Exception;
 use ESD\Core\Order\OrderOwnerTrait;
+use ESD\Core\Plugins\Event\EventDispatcher;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Server\Server;
-use Psr\Log\LoggerInterface;
 
 /**
  * 插件管理器
@@ -24,16 +24,11 @@ use Psr\Log\LoggerInterface;
 class PluginInterfaceManager implements PluginInterface
 {
     use OrderOwnerTrait;
-
+    use GetLogger;
     /**
      * @var Server
      */
     private $server;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $log;
 
     /**
      * @var EventDispatcher
@@ -49,13 +44,14 @@ class PluginInterfaceManager implements PluginInterface
     /**
      * PluginInterfaceManager constructor.
      * @param Server $server
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function __construct(Server $server)
     {
         $this->server = $server;
         $this->readyChannel = DIGet(Channel::class);
-        $this->log = $this->server->getLog();
-        $this->eventDispatcher = $this->server->getEventDispatcher();
+        $this->eventDispatcher = DIGet(EventDispatcher::class);
     }
 
     /**
@@ -93,9 +89,7 @@ class PluginInterfaceManager implements PluginInterface
     {
         foreach ($this->orderList as $plug) {
             if ($plug instanceof PluginInterface) {
-                if ($this->log != null) {
-                    $this->log->debug("加载[{$plug->getName()}]插件");
-                }
+                $this->debug("加载[{$plug->getName()}]插件");
                 $plug->init($context);
             }
         }
@@ -139,15 +133,13 @@ class PluginInterfaceManager implements PluginInterface
                 try {
                     $plug->beforeProcessStart($context);
                 } catch (\Throwable $e) {
-                    $this->log->error($e);
-                    $this->log->error("{$plug->getName()}插件加载失败");
+                    $this->error($e);
+                    $this->error("{$plug->getName()}插件加载失败");
                     continue;
                 }
                 if (!$plug->getReadyChannel()->pop(5)) {
                     $plug->getReadyChannel()->close();
-                    if ($this->log != null) {
-                        $this->log->error("{$plug->getName()}插件加载失败");
-                    }
+                    $this->error("{$plug->getName()}插件加载失败");
                     if ($this->eventDispatcher != null) {
                         $this->eventDispatcher->dispatchEvent(new PluginEvent(PluginEvent::PlugFailEvent, $plug));
                     }

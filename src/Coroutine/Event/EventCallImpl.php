@@ -7,10 +7,8 @@
  */
 
 namespace ESD\Coroutine\Event;
-
-
-use ESD\Core\Event\EventCall;
-use ESD\Core\Event\EventDispatcher;
+use ESD\Core\Plugins\Event\EventCall;
+use ESD\Core\Plugins\Event\EventDispatcher;
 use ESD\Coroutine\Channel\ChannelImpl;
 
 class EventCallImpl extends ChannelImpl implements EventCall

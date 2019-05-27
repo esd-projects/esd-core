@@ -11,10 +11,10 @@ namespace ESD\Core\Server\Process;
 use ESD\Core\Context\Context;
 use ESD\Core\Context\ContextBuilder;
 use ESD\Core\Context\ContextManager;
-use ESD\Core\Event\EventDispatcher;
-use ESD\Core\Event\EventMessageProcessor;
 use ESD\Core\Message\Message;
 use ESD\Core\Message\MessageProcessor;
+use ESD\Core\Plugins\Event\EventDispatcher;
+use ESD\Core\Plugins\Event\EventMessageProcessor;
 use ESD\Core\Server\Server;
 use Psr\Log\LoggerInterface;
 
@@ -237,7 +237,8 @@ abstract class Process
 
     /**
      * 进程启动的回调
-     * @throws \ESD\Core\Exception
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onProcessStart()
     {
@@ -246,8 +247,6 @@ abstract class Process
         });
         $this->log = Server::$instance->getLog();
         $this->eventDispatcher = Server::$instance->getEventDispatcher();
-        //注册事件派发处理函数
-        MessageProcessor::addMessageProcessor(new EventMessageProcessor($this->eventDispatcher));
         try {
             Server::$isStart = true;
             if ($this->processName != null) {
@@ -256,6 +255,9 @@ abstract class Process
             $this->server->getProcessManager()->setCurrentProcessId($this->processId);
             $this->processPid = getmypid();
             $this->server->getProcessManager()->setCurrentProcessPid($this->processPid);
+            //基础插件初始化
+            $this->server->getBasePlugManager()->beforeProcessStart($this->context);
+            $this->server->getBasePlugManager()->waitReady();
             //用户插件初始化
             $this->server->getPlugManager()->beforeProcessStart($this->context);
             $this->server->getPlugManager()->waitReady();

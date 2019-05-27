@@ -9,7 +9,7 @@
 namespace ESD\Plugins\Redis;
 
 
-use ESD\Core\Logger\GetLogger;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Context\Context;
 use ESD\Core\PlugIn\AbstractPlugin;
 use ESD\Core\Server\Server;
@@ -34,7 +34,7 @@ class RedisPlugin extends AbstractPlugin
      * 在服务启动前
      * @param Context $context
      * @return mixed
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      */
     public function beforeServerStart(Context $context)
     {
@@ -50,8 +50,10 @@ class RedisPlugin extends AbstractPlugin
     /**
      * 在进程启动前
      * @param Context $context
-     * @throws \ReflectionException
      * @throws RedisException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     * @throws \ReflectionException
      */
     public function beforeProcessStart(Context $context)
     {

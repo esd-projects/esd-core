@@ -11,7 +11,7 @@ namespace ESD\Plugins\Cache\Aspect;
 use DI\DependencyException;
 use DI\NotFoundException;
 use ESD\Coroutine\Co;
-use ESD\Core\Logger\GetLogger;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Server\Server;
 use ESD\Plugins\Aop\OrderAspect;
 use ESD\Plugins\Cache\Annotation\Cacheable;

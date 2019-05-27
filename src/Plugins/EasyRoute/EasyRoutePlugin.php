@@ -89,7 +89,7 @@ class EasyRoutePlugin extends AbstractPlugin
      * @return mixed|void
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ESD\Core\Exception
      * @throws \ReflectionException
      */
@@ -132,7 +132,7 @@ class EasyRoutePlugin extends AbstractPlugin
      * @param RouteCollector $r
      * @param $reflectionClass
      * @param $reflectionMethod
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ReflectionException
      */
     protected function addRoute(RouteRoleConfig $routeRole, RouteCollector $r, $reflectionClass, $reflectionMethod)
@@ -168,7 +168,7 @@ class EasyRoutePlugin extends AbstractPlugin
      * @param Context $context
      * @throws \DI\DependencyException
      * @throws \DI\NotFoundException
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      */
     public function beforeServerStart(Context $context)
     {

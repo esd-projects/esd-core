@@ -59,7 +59,7 @@ abstract class AbstractServerPort
 
     /**
      * 创建端口
-     * @throws \ESD\Core\Config\ConfigException
+     * @throws \ESD\Core\Plugins\Config\ConfigException
      */
     public function create(): void
     {

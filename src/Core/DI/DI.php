@@ -10,7 +10,6 @@ namespace ESD\Core\DI;
 
 
 use DI\ContainerBuilder;
-use ESD\Core\Server\Config\ServerConfig;
 
 class DI
 {
@@ -26,38 +25,34 @@ class DI
 
     /**
      * DI constructor.
-     * @param ServerConfig $serverConfig
-     * @throws \ESD\Core\Exception
+     * @throws \Exception
      */
-    public function __construct(ServerConfig $serverConfig)
+    public function __construct()
     {
-        $cacheProxiesDir = $serverConfig->getCacheDir() . '/proxies';
+       /* $cacheProxiesDir = ROOT_DIR . '/bin/cache/proxies';
         if (!file_exists($cacheProxiesDir)) {
             mkdir($cacheProxiesDir, 0777, true);
         }
-        $cacheDir = $serverConfig->getCacheDir() . "/di";
+        $cacheDir = ROOT_DIR . "/bin/cache/di";
         if (!file_exists($cacheDir)) {
             mkdir($cacheDir, 0777, true);
-        }
+        }*/
         $builder = new ContainerBuilder();
-        if (!$serverConfig->isDebug()) {
-            $builder->enableCompilation($cacheDir);
-            $builder->writeProxiesToFile(true, $cacheProxiesDir);
-        }
+     /*   $builder->enableCompilation($cacheDir);
+        $builder->writeProxiesToFile(true, $cacheProxiesDir);*/
         $builder->addDefinitions(self::$definitions);
         $builder->useAnnotations(true);
         $this->container = $builder->build();
     }
 
     /**
-     * @param ServerConfig $serverConfig
      * @return DI
-     * @throws \ESD\Core\Exception
+     * @throws \Exception
      */
-    public static function getInstance(ServerConfig $serverConfig = null)
+    public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new DI($serverConfig);
+            self::$instance = new DI();
         }
         return self::$instance;
     }

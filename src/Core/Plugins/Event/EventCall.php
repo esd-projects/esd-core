@@ -6,7 +6,7 @@
  * Time: 14:06
  */
 
-namespace ESD\Core\Event;
+namespace ESD\Core\Plugins\Event;
 
 
 interface EventCall

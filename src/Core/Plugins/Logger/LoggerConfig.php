@@ -6,7 +6,8 @@
  * Time: 9:33
  */
 
-namespace ESD\Server\Co\Logger;
+namespace ESD\Core\Plugins\Logger;
+
 
 use ESD\Core\Plugins\Config\BaseConfig;
 

@@ -9,7 +9,7 @@
 namespace ESD\Plugins\Redis;
 
 
-use ESD\Core\Config\BaseConfig;
+use ESD\Core\Plugins\Config\BaseConfig;
 
 class RedisConfig extends BaseConfig
 {

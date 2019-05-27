@@ -88,6 +88,7 @@ class Response
     public function redirect(string $url, int $http_code = 302)
     {
         $this->swooleResponse->redirect($url, $http_code);
+        $this->isEnd = true;
     }
 
     /**

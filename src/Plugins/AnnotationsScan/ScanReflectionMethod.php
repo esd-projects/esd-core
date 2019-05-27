@@ -12,6 +12,10 @@ namespace ESD\Plugins\AnnotationsScan;
 class ScanReflectionMethod
 {
     /**
+     * @var string
+     */
+    public $name;
+    /**
      * @var \ReflectionMethod
      */
     protected $reflectionMethod;
@@ -24,6 +28,7 @@ class ScanReflectionMethod
     {
         $this->reflectionMethod = $reflectionMethod;
         $this->parentReflectClass = $parentReflectClass;
+        $this->name = $reflectionMethod->name;
     }
 
     /**

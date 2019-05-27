@@ -75,7 +75,6 @@ class ConfigPlugin extends AbstractPlugin
     /**
      * 在服务启动前
      * @param Context $context
-     * @return mixed
      */
     public function beforeServerStart(Context $context)
     {
@@ -99,7 +98,6 @@ class ConfigPlugin extends AbstractPlugin
     /**
      * 在进程启动前
      * @param Context $context
-     * @return mixed
      */
     public function beforeProcessStart(Context $context)
     {

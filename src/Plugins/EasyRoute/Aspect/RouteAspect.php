@@ -58,7 +58,7 @@ class RouteAspect extends OrderAspect
         foreach ($this->easyRouteConfigs as $easyRouteConfig) {
             if (!isset($this->routeTools[$easyRouteConfig->getRouteTool()])) {
                 $className = $easyRouteConfig->getRouteTool();
-                $this->routeTools[$easyRouteConfig->getRouteTool()] = Server::$instance->getContainer()->get($className);
+                $this->routeTools[$easyRouteConfig->getRouteTool()] = DIget($className);
             }
         }
         $this->routeConfig = $routeConfig;
@@ -217,7 +217,7 @@ class RouteAspect extends OrderAspect
     {
         if (!isset($this->controllers[$controllerName])) {
             if (class_exists($controllerName)) {
-                $controller = Server::$instance->getContainer()->get($controllerName);
+                $controller = DIget($controllerName);
                 if ($controller instanceof IController) {
                     $this->controllers[$controllerName] = $controller;
                     return $controller;

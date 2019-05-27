@@ -217,6 +217,8 @@ abstract class AbstractServerPort
      * @param $server
      * @param string $data
      * @param array $clientInfo
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onPacket($server, string $data, array $clientInfo)
     {
@@ -236,6 +238,8 @@ abstract class AbstractServerPort
     /**
      * @param $request
      * @param $response
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onRequest($request, $response)
     {
@@ -261,6 +265,8 @@ abstract class AbstractServerPort
     /**
      * @param $server
      * @param $frame
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onMessage($server, $frame)
     {
@@ -286,7 +292,6 @@ abstract class AbstractServerPort
      * @param $request
      * @param $response
      * @return bool
-     * @throws \ESD\Core\Exception
      */
     public function _onHandshake($request, $response)
     {
@@ -333,6 +338,8 @@ abstract class AbstractServerPort
     /**
      * @param $server
      * @param $request
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onOpen($server, $request)
     {

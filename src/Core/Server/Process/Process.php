@@ -14,7 +14,6 @@ use ESD\Core\Context\ContextManager;
 use ESD\Core\Message\Message;
 use ESD\Core\Message\MessageProcessor;
 use ESD\Core\Plugins\Event\EventDispatcher;
-use ESD\Core\Plugins\Event\EventMessageProcessor;
 use ESD\Core\Server\Server;
 use Psr\Log\LoggerInterface;
 

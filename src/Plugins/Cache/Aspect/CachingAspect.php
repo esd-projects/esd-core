@@ -50,7 +50,7 @@ class CachingAspect extends OrderAspect
     public function __construct(CacheStorage $cacheStorage)
     {
         $this->cacheStorage = $cacheStorage;
-        $this->config = Server::$instance->getContainer()->get(CacheConfig::class);
+        $this->config = DIget(CacheConfig::class);
     }
 
 

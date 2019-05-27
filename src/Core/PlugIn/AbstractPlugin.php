@@ -33,26 +33,24 @@ abstract class AbstractPlugin extends Order implements PluginInterface
     /**
      * AbstractPlugin constructor.
      * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function __construct()
     {
         $this->readyChannel = DIGet(Channel::class);
-        if (Server::$instance->getContainer() != null) {
-            //注入DI
-            Server::$instance->getContainer()->injectOn($this);
-        }
+        //注入DI
+        Server::$instance->getContainer()->injectOn($this);
     }
 
     /**
      * 配置到DI容器
      * @param $name
      * @param $value
+     * @throws \Exception
      */
     public function setToDIContainer($name, $value)
     {
-        if (Server::$instance->getContainer() != null) {
-            Server::$instance->getContainer()->set($name, $value);
-        }
+        DISet($name, $value);
     }
 
     /**

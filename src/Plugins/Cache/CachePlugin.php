@@ -90,7 +90,7 @@ class CachePlugin extends AbstractPlugin
         $class = $this->cacheConfig->getCacheStorageClass();
         $this->cacheStorage = new $class($this->cacheConfig);
         $this->setToDIContainer(CacheStorage::class, $this->cacheStorage);
-        $aopConfig = Server::$instance->getContainer()->get(AopConfig::class);
+        $aopConfig = DIget(AopConfig::class);
         $aopConfig->addAspect(new CachingAspect($this->cacheStorage));
     }
 

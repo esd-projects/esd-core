@@ -48,7 +48,7 @@ class MysqlPlugin extends AbstractPlugin
     public function init(Context $context)
     {
         parent::init($context);
-        $aopConfig = Server::$instance->getContainer()->get(AopConfig::class);
+        $aopConfig = DIget(AopConfig::class);
         $aopConfig->addAspect(new MysqlAspect());
     }
 

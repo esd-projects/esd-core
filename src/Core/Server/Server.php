@@ -125,7 +125,7 @@ abstract class Server
         //获取DI容器
         $this->container = DI::getInstance()->getContainer();
         //设置默认Log
-        DI::getInstance()->getContainer()->set(LoggerInterface::class, new Log());
+        DISet(LoggerInterface::class, new Log());
         $this->container->set(Server::class, $this);
         $this->container->set(ServerConfig::class, $this->serverConfig);
         date_default_timezone_set('Asia/Shanghai');

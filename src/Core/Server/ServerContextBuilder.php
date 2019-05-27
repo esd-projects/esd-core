@@ -19,7 +19,6 @@ class ServerContextBuilder implements ContextBuilder
     /**
      * ServerContextBuilder constructor.
      * @param Server $server
-     * @throws \ESD\Core\Exception
      */
     public function __construct(Server $server)
     {

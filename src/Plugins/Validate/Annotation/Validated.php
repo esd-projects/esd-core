@@ -398,7 +398,7 @@ class Validated extends Annotation
         }
         $validRole = [];
         foreach ($reflectionClass->getProperties() as $property) {
-            $validateds = Server::$instance->getContainer()->get(CachedReader::class)->getPropertyAnnotations($property);
+            $validateds = DIget(CachedReader::class)->getPropertyAnnotations($property);
             foreach ($validateds as $validated) {
                 if ($validated instanceof Validated) {
                     foreach ($validated->build($property->name) as $one) {

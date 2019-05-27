@@ -128,7 +128,7 @@ class AnnotationsScanPlugin extends AbstractPlugin
         //默认添加src目录
         $this->annotationsScanConfig->addIncludePath(Server::$instance->getServerConfig()->getSrcDir());
         $this->annotationsScanConfig->merge();
-        $this->cacheReader = Server::$instance->getContainer()->get(CachedReader::class);
+        $this->cacheReader = DIget(CachedReader::class);
         $this->scanClass = new ScanClass($this->cacheReader);
         $this->setToDIContainer(ScanClass::class, $this->scanClass);
         foreach ($this->annotationsScanConfig->getIncludePaths() as $path) {

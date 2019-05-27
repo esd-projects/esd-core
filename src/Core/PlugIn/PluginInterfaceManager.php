@@ -84,6 +84,8 @@ class PluginInterfaceManager implements PluginInterface
      * 初始化
      * @param Context $context
      * @return mixed|void
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function init(Context $context)
     {
@@ -121,6 +123,8 @@ class PluginInterfaceManager implements PluginInterface
      * 在进程启动之前
      * @param Context $context
      * @return mixed|void
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function beforeProcessStart(Context $context)
     {

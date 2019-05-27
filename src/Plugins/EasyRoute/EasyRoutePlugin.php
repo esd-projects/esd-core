@@ -106,7 +106,7 @@ class EasyRoutePlugin extends AbstractPlugin
         }
         $this->routeConfig->merge();
         $serverConfig = Server::$instance->getServerConfig();
-        $aopConfig = Server::$instance->getContainer()->get(AopConfig::class);
+        $aopConfig = DIget(AopConfig::class);
         $aopConfig->addIncludePath($serverConfig->getVendorDir() . "/esd/base-server");
         $this->routeAspect = new RouteAspect($this->easyRouteConfigs, $this->routeConfig);
         $aopConfig->addAspect($this->routeAspect);
@@ -174,7 +174,7 @@ class EasyRoutePlugin extends AbstractPlugin
     {
         $this->routeConfig->merge();
         $this->setToDIContainer(ClientData::class, new ClientDataProxy());
-        $this->scanClass = Server::$instance->getContainer()->get(ScanClass::class);
+        $this->scanClass = DIget(ScanClass::class);
         $reflectionMethods = $this->scanClass->findMethodsByAnn(RequestMapping::class);
 
         $this->dispatcher = simpleDispatcher(function (RouteCollector $r) use ($reflectionMethods) {

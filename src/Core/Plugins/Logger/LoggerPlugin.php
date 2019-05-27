@@ -46,6 +46,7 @@ class LoggerPlugin extends AbstractPlugin
      * @param LoggerConfig|null $loggerConfig
      * @throws \DI\DependencyException
      * @throws \ReflectionException
+     * @throws \DI\NotFoundException
      */
     public function __construct(?LoggerConfig $loggerConfig = null)
     {
@@ -82,7 +83,7 @@ class LoggerPlugin extends AbstractPlugin
         $this->logger->pushProcessor(new GoSwooleProcessor($this->loggerConfig->isColor()));
         $this->logger->pushProcessor(new GoIntrospectionProcessor());
         $this->logger->pushHandler($this->handler);
-        DI::getInstance()->getContainer()->set(LoggerInterface::class,$this->logger);
+        DISet(LoggerInterface::class,$this->logger);
     }
 
     /**

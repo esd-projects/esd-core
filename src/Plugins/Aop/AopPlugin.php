@@ -36,6 +36,7 @@ class AopPlugin extends AbstractPlugin
      * @param AopConfig|null $aopConfig
      * @throws \DI\DependencyException
      * @throws \ReflectionException
+     * @throws \DI\NotFoundException
      */
     public function __construct(?AopConfig $aopConfig = null)
     {
@@ -91,7 +92,8 @@ class AopPlugin extends AbstractPlugin
      * 在服务启动前
      * @param Context $context
      * @return mixed
-     * @throws \EESD\Core\Server\Port\Exception\ConfigException
+     * @throws ConfigException
+     * @throws Exception
      */
     public function beforeServerStart(Context $context)
     {

@@ -205,3 +205,14 @@ function DIGet($name, $params = [])
     }
     return $result;
 }
+
+/**
+ * @param $name
+ * @param $value
+ * @return mixed
+ * @throws Exception
+ */
+function DISet($name, $value)
+{
+    DI::getInstance()->getContainer()->set($name, $value);
+}

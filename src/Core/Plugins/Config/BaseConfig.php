@@ -35,7 +35,7 @@ class BaseConfig
     public function __construct(string $prefix, bool $isArray = false, $indexName = null)
     {
         $this->configPrefix = $prefix;
-        $this->reflectionClass = new ReflectionClass(Static::class);
+        $this->reflectionClass = new ReflectionClass(static::class);
         $this->isArray = $isArray;
         $this->indexName = $indexName;
     }
@@ -43,6 +43,8 @@ class BaseConfig
     /**
      * 当设置好配置后将合并配置
      * @throws ConfigException
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function merge()
     {
@@ -74,7 +76,7 @@ class BaseConfig
         $this->config = Server::$instance->getConfigContext()->get($prefix);
         $this->buildFromConfig($this->config);
         //注入DI中
-        Server::$instance->getContainer()->set(get_class($this), $this);
+        DISet(get_class($this), $this);
     }
 
     /**

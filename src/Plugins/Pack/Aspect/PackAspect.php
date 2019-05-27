@@ -44,7 +44,7 @@ class PackAspect extends OrderAspect
             if (!empty($packConfig->getPackTool())) {
                 if (!isset($this->packTools[$packConfig->getPackTool()])) {
                     $className = $packConfig->getPackTool();
-                    $this->packTools[$packConfig->getPackTool()] = Server::$instance->getContainer()->get($className);
+                    $this->packTools[$packConfig->getPackTool()] = DIget($className);
                 }
             }
         }

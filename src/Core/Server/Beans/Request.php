@@ -39,7 +39,7 @@ class Request
 
     /**
      * swoole的原始对象
-     * @var Swoole\Http\Request
+     * @var \Swoole\Http\Request
      */
     private $swooleRequest;
     public $header;
@@ -110,6 +110,7 @@ class Request
 
     /**
      * @param string $key
+     * @param null $default
      * @return string|null
      */
     public function getCookie(string $key, $default = null)

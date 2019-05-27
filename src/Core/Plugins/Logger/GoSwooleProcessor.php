@@ -9,9 +9,9 @@
 namespace ESD\Core\Plugins\Logger;
 
 use ESD\Core\Server\Server;
-use ESD\Coroutine\Co;
 use Monolog\Logger;
 use Monolog\Processor\ProcessorInterface;
+use Swoole\Coroutine;
 
 class GoSwooleProcessor implements ProcessorInterface
 {
@@ -50,7 +50,7 @@ class GoSwooleProcessor implements ProcessorInterface
                     'processId' => $process->getProcessId(),
                     'processName' => $process->getProcessName(),
                     'processGroup' => $process->getGroupName(),
-                    'cid' => Co::getCid()
+                    'cid' => Coroutine::getCid()
                 )
             );
         }

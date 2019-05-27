@@ -385,7 +385,8 @@ abstract class Server
     /**
      * @param $server
      * @param int $worker_id
-     * @throws \ESD\Core\Exception
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
      */
     public function _onWorkerStart($server, int $worker_id)
     {

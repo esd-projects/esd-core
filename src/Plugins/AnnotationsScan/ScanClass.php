@@ -11,7 +11,6 @@ namespace ESD\Plugins\AnnotationsScan;
 
 use Doctrine\Common\Annotations\CachedReader;
 use ReflectionClass;
-use ReflectionMethod;
 
 class ScanClass
 {
@@ -40,7 +39,7 @@ class ScanClass
         $this->annotationClass[$annClass][] = $reflectionClass;
     }
 
-    public function addAnnotationMethod(string $annClass, ReflectionMethod $reflectionMethod)
+    public function addAnnotationMethod(string $annClass, ScanReflectionMethod $reflectionMethod)
     {
         $this->annotationMethod[$annClass][] = $reflectionMethod;
     }
@@ -66,7 +65,7 @@ class ScanClass
     /**
      * 通过注解类名获取相关方法
      * @param $annClass
-     * @return ReflectionMethod[]
+     * @return ScanReflectionMethod[]
      */
     public function findMethodsByAnn($annClass)
     {

@@ -12,11 +12,11 @@ namespace ESD\Plugins\AnnotationsScan;
 use DI\DependencyException;
 use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\CachedReader;
-use ESD\Core\Exception;
-use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Context\Context;
+use ESD\Core\Exception;
 use ESD\Core\PlugIn\AbstractPlugin;
 use ESD\Core\PlugIn\PluginInterfaceManager;
+use ESD\Core\Plugins\Logger\GetLogger;
 use ESD\Core\Server\Server;
 use ESD\Plugins\AnnotationsScan\Annotation\Component;
 use ESD\Plugins\Aop\AopPlugin;
@@ -45,6 +45,7 @@ class AnnotationsScanPlugin extends AbstractPlugin
      * @param AnnotationsScanConfig|null $annotationsScanConfig
      * @throws DependencyException
      * @throws ReflectionException
+     * @throws \DI\NotFoundException
      */
     public function __construct(?AnnotationsScanConfig $annotationsScanConfig = null)
     {
@@ -62,6 +63,7 @@ class AnnotationsScanPlugin extends AbstractPlugin
      * @throws DependencyException
      * @throws Exception
      * @throws ReflectionException
+     * @throws \DI\NotFoundException
      */
     public function onAdded(PluginInterfaceManager $pluginInterfaceManager)
     {
@@ -131,7 +133,8 @@ class AnnotationsScanPlugin extends AbstractPlugin
         $this->cacheReader = DIget(CachedReader::class);
         $this->scanClass = new ScanClass($this->cacheReader);
         $this->setToDIContainer(ScanClass::class, $this->scanClass);
-        foreach ($this->annotationsScanConfig->getIncludePaths() as $path) {
+        $paths = array_unique($this->annotationsScanConfig->getIncludePaths());
+        foreach ($paths as $path) {
             $files = $this->scanPhp($path);
             foreach ($files as $file) {
                 $class = $this->getClassFromFile($file);
@@ -153,16 +156,16 @@ class AnnotationsScanPlugin extends AbstractPlugin
                                 }
                             }
                             foreach ($reflectionClass->getMethods() as $reflectionMethod) {
-                                $reflectionMethod->reflectionClass = $reflectionClass;
+                                $scanReflectionMethod = new ScanReflectionMethod($reflectionClass, $reflectionMethod);
                                 $annotations = $this->cacheReader->getMethodAnnotations($reflectionMethod);
                                 foreach ($annotations as $annotation) {
                                     $annotationClass = get_class($annotation);
                                     $this->debug("Find a method annotation $annotationClass in $class::$reflectionMethod->name");
-                                    $this->scanClass->addAnnotationMethod($annotationClass, $reflectionMethod);
+                                    $this->scanClass->addAnnotationMethod($annotationClass, $scanReflectionMethod);
                                     $annotationClass = get_parent_class($annotation);
                                     if ($annotationClass != Annotation::class) {
                                         $this->debug("Find a method annotation $annotationClass in $class::$reflectionMethod->name");
-                                        $this->scanClass->addAnnotationMethod($annotationClass, $reflectionMethod);
+                                        $this->scanClass->addAnnotationMethod($annotationClass, $scanReflectionMethod);
                                     }
                                 }
                             }

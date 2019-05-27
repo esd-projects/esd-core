@@ -7,7 +7,6 @@ namespace ESD\ExampleClass\Controller;
 use ESD\Plugins\EasyRoute\Annotation\Controller;
 use ESD\Plugins\EasyRoute\Annotation\RequestMapping;
 use ESD\Plugins\EasyRoute\Annotation\RequestParam;
-use ESD\Plugins\EasyRoute\Annotation\RequestRawJson;
 use ESD\Plugins\EasyRoute\Controller\EasyController;
 use ESD\Plugins\Mysql\GetMysql;
 use ESD\Plugins\Redis\GetRedis;

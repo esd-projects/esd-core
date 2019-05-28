@@ -32,6 +32,11 @@ interface EventCall
     public function call(callable $fuc);
 
     /**
+     * @param callable $fuc
+     * @return mixed
+     */
+    public function wait(callable $fuc);
+    /**
      * @return mixed
      */
     public function destroy();

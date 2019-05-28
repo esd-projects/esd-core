@@ -32,9 +32,10 @@ interface EventCall
     public function call(callable $fuc);
 
     /**
+     * @param int $timeout
      * @return mixed
      */
-    public function wait();
+    public function wait($timeout = 5);
     /**
      * @return mixed
      */

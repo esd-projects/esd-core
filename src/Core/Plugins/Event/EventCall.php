@@ -26,11 +26,10 @@ interface EventCall
     public function send($data);
 
     /**
-     * @param $fuc
-     * @param $timeout
+     * @param callable $fuc
      * @return mixed
      */
-    public function call(callable $fuc, $timeout = 5);
+    public function call(callable $fuc);
 
     /**
      * @return mixed

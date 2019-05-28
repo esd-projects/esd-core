@@ -82,7 +82,9 @@ class LoggerPlugin extends AbstractPlugin
         $this->logger->pushProcessor(new GoSwooleProcessor($this->loggerConfig->isColor()));
         $this->logger->pushProcessor(new GoIntrospectionProcessor());
         $this->logger->pushHandler($this->handler);
-        DISet(LoggerInterface::class,$this->logger);
+        DISet(LoggerInterface::class, $this->logger);
+        DISet(\Monolog\Logger::class, $this->logger);
+        DISet(Logger::class, $this->logger);
     }
 
     /**

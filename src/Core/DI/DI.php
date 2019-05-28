@@ -29,17 +29,17 @@ class DI
      */
     public function __construct()
     {
-       /* $cacheProxiesDir = ROOT_DIR . '/bin/cache/proxies';
-        if (!file_exists($cacheProxiesDir)) {
-            mkdir($cacheProxiesDir, 0777, true);
-        }
-        $cacheDir = ROOT_DIR . "/bin/cache/di";
-        if (!file_exists($cacheDir)) {
-            mkdir($cacheDir, 0777, true);
-        }*/
+        /* $cacheProxiesDir = ROOT_DIR . '/bin/cache/proxies';
+         if (!file_exists($cacheProxiesDir)) {
+             mkdir($cacheProxiesDir, 0777, true);
+         }
+         $cacheDir = ROOT_DIR . "/bin/cache/di";
+         if (!file_exists($cacheDir)) {
+             mkdir($cacheDir, 0777, true);
+         }*/
         $builder = new ContainerBuilder();
-     /*   $builder->enableCompilation($cacheDir);
-        $builder->writeProxiesToFile(true, $cacheProxiesDir);*/
+        /*   $builder->enableCompilation($cacheDir);
+           $builder->writeProxiesToFile(true, $cacheProxiesDir);*/
         $builder->addDefinitions(self::$definitions);
         $builder->useAnnotations(true);
         $this->container = $builder->build();
@@ -63,5 +63,30 @@ class DI
     public function getContainer(): \DI\Container
     {
         return $this->container;
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return mixed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function get($name, $params = [])
+    {
+        $result = $this->getContainer()->get($name);
+        if ($result instanceof Factory) {
+            $result = $result->create($params);
+        }
+        return $result;
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function set($name, $value)
+    {
+        $this->container->set($name, $value);
     }
 }

@@ -8,7 +8,6 @@
 
 use ESD\Core\Context\ContextManager;
 use ESD\Core\DI\DI;
-use ESD\Core\DI\Factory;
 use ESD\Core\Runtime;
 
 const HOOK_TCP = SWOOLE_HOOK_TCP;//TCP Socket类型的stream
@@ -194,16 +193,11 @@ function clearDir($path = null)
  * @param $name
  * @param array $params
  * @return mixed
- * @throws \DI\DependencyException
- * @throws \DI\NotFoundException
+ * @throws Exception
  */
 function DIGet($name, $params = [])
 {
-    $result = DI::getInstance()->getContainer()->get($name);
-    if ($result instanceof Factory) {
-        $result = $result->create($params);
-    }
-    return $result;
+    return DI::getInstance()->get($name, $params);
 }
 
 /**
@@ -214,5 +208,5 @@ function DIGet($name, $params = [])
  */
 function DISet($name, $value)
 {
-    DI::getInstance()->getContainer()->set($name, $value);
+    DI::getInstance()->set($name, $value);
 }

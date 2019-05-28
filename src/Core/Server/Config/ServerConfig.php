@@ -10,6 +10,7 @@ namespace ESD\Core\Server\Config;
 use ESD\Core\Exception;
 use ESD\Core\Plugins\Config\BaseConfig;
 use ESD\Core\Plugins\Config\ConfigException;
+use ESD\Core\Runtime;
 
 /**
  * 服务配置
@@ -765,6 +766,7 @@ class ServerConfig extends BaseConfig
             $build['websocket_subprotocol'] = $this->getWebsocketSubprotocol();
         }
         $build['open_websocket_close_frame'] = $this->isOpenWebsocketCloseFrame();
+        $build['enable_coroutine'] = Runtime::$enableCo;
         return $build;
     }
 

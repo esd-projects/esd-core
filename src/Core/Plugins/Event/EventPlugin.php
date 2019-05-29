@@ -9,7 +9,9 @@
 namespace ESD\Core\Plugins\Event;
 
 
+use ESD\Core\Channel\Channel;
 use ESD\Core\Context\Context;
+use ESD\Core\Message\Message;
 use ESD\Core\Message\MessageProcessor;
 use ESD\Core\PlugIn\AbstractPlugin;
 
@@ -33,8 +35,7 @@ class EventPlugin extends AbstractPlugin
     /**
      * @param Context $context
      * @return mixed|void
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Exception
      */
     public function init(Context $context)
     {
@@ -46,9 +47,16 @@ class EventPlugin extends AbstractPlugin
     /**
      * 在服务启动前
      * @param Context $context
+     * @throws \Exception
      */
     public function beforeServerStart(Context $context)
     {
+        class_exists(MessageProcessor::class);
+        class_exists(EventMessageProcessor::class);
+        DIGet(EventCall::class, [$this->eventDispatcher, ""]);
+        DIGet(Channel::class);
+        class_exists(Message::class);
+        class_exists(EventMessage::class);
         return;
     }
 

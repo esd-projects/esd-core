@@ -8,7 +8,7 @@
 
 namespace ESD\Core\Server\Beans;
 
-use ESD\BaseServer\ParamException;
+use ESD\Core\ParamException;
 use ESD\Core\Exception;
 
 /**

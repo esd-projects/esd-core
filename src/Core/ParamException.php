@@ -6,7 +6,7 @@
  * Time: 15:35
  */
 
-namespace ESD\BaseServer;
+namespace ESD\Core;
 use ESD\Core\Exception;
 
 class ParamException extends Exception

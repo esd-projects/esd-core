@@ -289,8 +289,6 @@ abstract class Server
         //配置进程
         $this->processManager->createProcess();
         $this->configureReady();
-        //打印配置
-        $this->getLog()->debug("打印配置:\n" . $this->getConfigContext()->getCacheContainYaml());
     }
 
     /**

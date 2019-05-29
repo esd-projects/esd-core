@@ -8,6 +8,7 @@
 
 namespace ESD\Core\Server\Beans;
 
+use ESD\BaseServer\ParamException;
 use ESD\Core\Exception;
 
 /**
@@ -139,7 +140,7 @@ class Request
     {
         $result = $this->get[$key] ?? null;
         if ($result == null) {
-            throw new Exception("缺少参数$key");
+            throw new ParamException("require params $key");
         }
         return $result;
     }
@@ -162,6 +163,21 @@ class Request
 
 
     /**
+     * @param null $key
+     * @param null $default
+     * @return array|null
+     */
+    public function query($key = null, $default = null)
+    {
+        $query = array_merge($this->get, $this->post);
+        if($key){
+            return $query[$key] ?? $default;
+        }
+        return $query;
+    }
+
+
+    /**
      * @param string $key
      * @param null $default
      * @return string|null
@@ -180,7 +196,7 @@ class Request
     {
         $result = $this->post[$key] ?? null;
         if ($result == null) {
-            throw new Exception("缺少参数$key");
+            throw new ParamException("require param $key");
         }
         return $result;
     }
@@ -216,7 +232,7 @@ class Request
     {
         $result = $this->get[$key] ?? $this->post[$key] ?? null;
         if ($result == null) {
-            throw new Exception("缺少参数$key");
+            throw new ParamException("require param $key");
         }
         return $result;
     }
@@ -230,7 +246,7 @@ class Request
     {
         $result = $this->post[$key] ?? $this->get[$key] ?? null;
         if ($result == null) {
-            throw new Exception("缺少参数$key");
+            throw new ParamException("require param $key");
         }
         return $result;
     }
@@ -242,5 +258,20 @@ class Request
     public function getJsonBody()
     {
         return json_decode($this->getRawContent(), true);
+    }
+
+
+    /**
+     * 获取request xml
+     * @return array
+     * @throws ParamException
+     */
+    public function getXmlBody()
+    {
+        if (!$xml = simplexml_load_string($this->getRawContent(), 'SimpleXMLElement', LIBXML_NOCDATA)) {
+            throw new ParamException("wrong XmlBody");
+        }
+        $xml = json_decode(json_encode($xml), true);
+        return (array)$xml;
     }
 }

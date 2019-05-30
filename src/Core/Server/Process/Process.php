@@ -13,7 +13,6 @@ use ESD\Core\Context\ContextBuilder;
 use ESD\Core\Context\ContextManager;
 use ESD\Core\Message\Message;
 use ESD\Core\Message\MessageProcessor;
-use ESD\Core\Plugins\Event\Event;
 use ESD\Core\Plugins\Event\EventDispatcher;
 use ESD\Core\Server\Server;
 use Psr\Log\LoggerInterface;
@@ -247,14 +246,6 @@ abstract class Process
         });
         $this->log = Server::$instance->getLog();
         $this->eventDispatcher = Server::$instance->getEventDispatcher();
-        //基础插件初始化
-        $this->server->getBasePlugManager()->beforeProcessStart($this->context);
-        $this->server->getBasePlugManager()->waitReady();
-        if ($this->processId != 0) {
-            //多进程只允许一个进程加载完后才能加载其他进程，否则会出现文件读写冲突
-            $call = $this->eventDispatcher->listen(ProcessEvent::ProcessReadyEvent, null, true);
-            $call->wait();
-        }
         try {
             Server::$isStart = true;
             if ($this->processName != null) {
@@ -263,7 +254,9 @@ abstract class Process
             $this->server->getProcessManager()->setCurrentProcessId($this->processId);
             $this->processPid = getmypid();
             $this->server->getProcessManager()->setCurrentProcessPid($this->processPid);
-
+            //基础插件初始化
+            $this->server->getBasePlugManager()->beforeProcessStart($this->context);
+            $this->server->getBasePlugManager()->waitReady();
             //用户插件初始化
             $this->server->getPlugManager()->beforeProcessStart($this->context);
             $this->server->getPlugManager()->waitReady();
@@ -295,11 +288,6 @@ abstract class Process
             enableRuntimeCoroutine();
             //发出事件
             $this->eventDispatcher->dispatchEvent(new ProcessEvent(ProcessEvent::ProcessStartEvent, $this));
-            if ($this->processId == 0) {
-                $this->eventDispatcher->dispatchProcessEvent(new Event(ProcessEvent::ProcessReadyEvent, ""),
-                    ... Server::$instance->getProcessManager()->getProcesses()
-                );
-            }
             $this->onProcessStart();
         } catch (\Throwable $e) {
             $this->log->error($e);
@@ -319,12 +307,12 @@ abstract class Process
      */
     public function _onPipeMessage(Message $message, Process $fromProcess)
     {
+        if (!$this->isReady()) {
+            $this->pipeMessageCache[] = [$message, $fromProcess];
+            return;
+        }
         try {
             if (!MessageProcessor::dispatch($message)) {
-                if (!$this->isReady()) {
-                    $this->pipeMessageCache[] = [$message, $fromProcess];
-                    return;
-                }
                 $this->onPipeMessage($message, $fromProcess);
             }
         } catch (\Throwable $e) {

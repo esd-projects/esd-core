@@ -12,7 +12,6 @@ use ESD\Core\Plugins\Event\Event;
 
 class ProcessEvent extends Event
 {
-    const ProcessReadyEvent = "ProcessReadyEvent";
     const ProcessStartEvent = "ProcessStartEvent";
     const ProcessStopEvent = "ProcessStopEvent";
 }

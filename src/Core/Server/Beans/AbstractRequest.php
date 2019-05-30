@@ -41,39 +41,39 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
     /**
      * @var array
      */
-    private $attributes = [];
+    protected $attributes = [];
 
     /**
      * @var array
      */
-    private $cookieParams = [];
+    protected $cookieParams = [];
 
     /**
      * @var null|array|object
      */
-    private $parsedBody;
+    protected $parsedBody;
 
     /**
      * @var array
      */
-    private $queryParams = [];
+    protected $queryParams = [];
 
     /**
      * @var array
      */
-    private $serverParams = [];
+    protected $serverParams = [];
 
     /**
      * @var array
      */
-    private $uploadedFiles = [];
+    protected $uploadedFiles = [];
 
     /**
      * the body of parser
      *
      * @var mixed
      */
-    private $bodyParams;
+    protected $bodyParams;
 
     /**
      * @param string                               $method  HTTP method
@@ -574,7 +574,7 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      *
      * @link http://tools.ietf.org/html/rfc7230#section-5.4
      */
-    private function updateHostFromUri()
+    protected function updateHostFromUri()
     {
         $host = $this->uri->getHost();
 

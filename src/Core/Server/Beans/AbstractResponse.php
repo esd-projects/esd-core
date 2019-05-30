@@ -23,7 +23,7 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     /**
      * @var array
      */
-    private $attributes = [];
+    protected $attributes = [];
 
     /**
      * @var array

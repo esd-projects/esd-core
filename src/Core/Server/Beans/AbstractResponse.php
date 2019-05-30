@@ -130,6 +130,11 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
         return $clone;
     }
 
+    public function getReasonPhrase()
+    {
+        return '';
+    }
+
     /**
      * Return an instance with the specified charset content type.
      *

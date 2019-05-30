@@ -5,10 +5,8 @@ namespace ESD\Core\Server\Beans;
 
 
 use ESD\Core\Server\Beans\Http\MessageTrait;
-use ESD\Core\Server\Beans\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 abstract class AbstractRequest implements RequestInterface, ServerRequestInterface

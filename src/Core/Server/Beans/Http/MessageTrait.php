@@ -2,6 +2,7 @@
 
 namespace ESD\Core\Server\Beans\Http;
 
+use Psr\Http\Message\StreamInterface;
 /**
  * Trait implementing functionality common to requests and responses.
  */
@@ -24,7 +25,7 @@ trait MessageTrait
     protected $protocol = '1.1';
 
     /**
-     * @var string
+     * @var StreamInterface
      */
     protected $stream = '';
 
@@ -278,27 +279,19 @@ trait MessageTrait
     }
 
     /**
-     * Gets the body of the message.
-     *
-     * @return string Returns the body
-     */
-    public function getBody()
-    {
-        return $this->stream;
-    }
-
-    /**
      * Return an instance with the specified message body.
+     *
      * The body MUST be a StreamInterface object.
+     *
      * This method MUST be implemented in such a way as to retain the
      * immutability of the message, and MUST return a new instance that has the
      * new body stream.
      *
-     * @param string $body Body.
+     * @param StreamInterface $body Body.
      * @return static
      * @throws \InvalidArgumentException When the body is not valid.
      */
-    public function withBody(string $body)
+    public function withBody(StreamInterface $body)
     {
         if ($body === $this->stream) {
             return $this;
@@ -308,6 +301,21 @@ trait MessageTrait
         $new->stream = $body;
         return $new;
     }
+
+    /**
+     * Gets the body of the message.
+     *
+     * @return string Returns the body
+     */
+    public function getBody()
+    {
+        if (!$this->stream) {
+            $this->stream = new HttpStream('');
+        }
+
+        return $this->stream;
+    }
+
 
     /**
      * Trims whitespace from the header values.

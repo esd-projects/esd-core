@@ -184,6 +184,9 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
 
     public function appendBody(string $body)
     {
+        if(!$this->stream) {
+            $this->stream = new HttpStream('');
+        }
         $this->stream->write($body);
         return $this;
     }

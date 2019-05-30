@@ -76,6 +76,21 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
     protected $bodyParams;
 
     /**
+     * @var int
+     */
+    protected $fd = 0;
+
+    /**
+     * @var int
+     */
+    protected $streamId = 0;
+
+    /**
+     * @var array
+     */
+    protected $files;
+
+    /**
      * @param string                               $method  HTTP method
      * @param string|UriInterface                  $uri     URI
      * @param array                                $headers Request headers
@@ -602,4 +617,52 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      * @return mixed
      */
     abstract public function load($realObject = null);
+
+    /**
+     * @return int
+     */
+    public function getFd(): int
+    {
+        return $this->fd;
+    }
+
+    /**
+     * @param int $fd
+     */
+    public function setFd(int $fd): void
+    {
+        $this->fd = $fd;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStreamId(): int
+    {
+        return $this->streamId;
+    }
+
+    /**
+     * @param int $streamId
+     */
+    public function setStreamId(int $streamId): void
+    {
+        $this->streamId = $streamId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param array $files
+     */
+    public function setFiles(array $files): void
+    {
+        $this->files = $files;
+    }
 }

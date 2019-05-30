@@ -4,7 +4,6 @@
 namespace ESD\Core\Server\Beans;
 
 use ESD\Core\Server\Beans\Http\Cookie;
-use ESD\Core\Server\Beans\Http\HttpStream;
 use ESD\Core\Server\Beans\Http\MessageTrait;
 
 abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
@@ -204,7 +203,7 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
      * 发送数据
      * @return mixed
      */
-    abstract public function send();
+    abstract public function end();
 
     /**
      * 分离响应对象。使用此方法后，$response对象销毁时不会自动end，与Http\Response::create和Server::send配合使用。

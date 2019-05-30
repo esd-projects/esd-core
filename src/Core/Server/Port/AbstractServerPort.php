@@ -265,7 +265,7 @@ abstract class AbstractServerPort
         } catch (\Throwable $e) {
             Server::$instance->getLog()->error($e);
         }
-        $_response->end("");
+        $_response->end();
     }
 
     public abstract function onHttpRequest(AbstractRequest $request, AbstractResponse $response);

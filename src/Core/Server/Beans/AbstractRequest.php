@@ -13,8 +13,27 @@ use Psr\Http\Message\UriInterface;
 
 abstract class AbstractRequest implements RequestInterface, ServerRequestInterface
 {
-    use MessageTrait;
+    const HEADER_HOST = "host";
+    const HEADER_CONNECTION = "connection";
+    const HEADER_PRAGMA = "pragma";
+    const HEADER_CACHE_CONTROL = "cache-control";
+    const HEADER_USER_AGENT = "user-agent";
+    const HEADER_ACCEPT = "accept";
+    const HEADER_REFERER = "referer";
+    const HEADER_ACCEPT_ENCODING = "accept-encoding";
+    const HEADER_ACCEPT_LANGUAGE = "accept-language";
 
+    const SERVER_REQUEST_METHOD = "request_method";
+    const SERVER_REQUEST_URI = "request_uri";
+    const SERVER_PATH_INFO = "path_info";
+    const SERVER_REQUEST_TIME = "request_time";
+    const SERVER_REQUEST_TIME_FLOAT = "request_time_float";
+    const SERVER_SERVER_PORT = "server_port";
+    const SERVER_REMOTE_ADDR = "remote_addr";
+    const SERVER_MASTER_TIME = "master_time";
+    const SERVER_SERVER_PROTOCOL = "server_protocol";
+
+    use MessageTrait;
 
     /**
      * @var array
@@ -89,36 +108,6 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      * @var array
      */
     protected $files;
-
-    /**
-     * @param string                               $method  HTTP method
-     * @param string|UriInterface                  $uri     URI
-     * @param array                                $headers Request headers
-     * @param string|null|resource|StreamInterface $body    Request body
-     * @param string                               $version Protocol version
-     */
-    public function __construct(
-        string $method,
-        $uri,
-        array $headers = [],
-        $body = null,
-        string $version = '1.1'
-    ) {
-        if (! $uri instanceof UriInterface) {
-            $uri = new Uri($uri);
-        }
-
-        $this->method = strtoupper($method);
-        $this->uri = $uri;
-        $this->setHeaders($headers);
-        $this->protocol = $version;
-
-        if (! $this->hasHeader('Host')) {
-            $this->updateHostFromUri();
-        }
-
-        $this->stream = $body;
-    }
 
     /**
      * Retrieves the message's request target.

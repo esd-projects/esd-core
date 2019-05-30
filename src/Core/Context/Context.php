@@ -54,6 +54,26 @@ class Context
     }
 
     /**
+     * 添加
+     * @param $name
+     * @param $class
+     * @param $value
+     */
+    public function addWithClass($name, $value, $class)
+    {
+        if ($value == null) return;
+        $this->contain[$name] = $value;
+
+        if (class_exists($class)) {
+            $this->classContain[$class] = $value;
+        } else {
+            if (!is_string($value) && !is_int($value) && !is_bool($value) && !is_float($value) && !is_double($value) && !is_array($value) && !is_callable($value) && !is_long($value)) {
+                $this->classContain[get_class($value)] = $value;
+            }
+        }
+    }
+
+    /**
      * 通过类名获取
      * @param $className
      * @return mixed|null

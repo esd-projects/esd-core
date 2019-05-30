@@ -12,6 +12,8 @@ namespace ESD\Core\Server\Port;
 use ESD\Core\Context\Context;
 use ESD\Core\Server\Beans\AbstractRequest;
 use ESD\Core\Server\Beans\AbstractResponse;
+use ESD\Core\Server\Beans\Request;
+use ESD\Core\Server\Beans\Response;
 use ESD\Core\Server\Beans\WebSocketCloseFrame;
 use ESD\Core\Server\Beans\WebSocketFrame;
 use ESD\Core\Server\Config\PortConfig;
@@ -247,20 +249,20 @@ abstract class AbstractServerPort
         }
 
         /**
-         * @var $_request AbstractRequest
+         * @var $_request Request
          */
         $_request = DIGet(AbstractRequest::class);
         $_request->load($request);
 
         /**
-         * @var $_response AbstractResponse
+         * @var $_response Response
          */
         $_response = DIGet(AbstractResponse::class);
         $_response->load($response);
 
         try {
-            setContextValue("request", $_request);
-            setContextValue("response", $_response);
+            setContextValueWithClass("request", $_request, Request::class);
+            setContextValueWithClass("response", $_response, Response::class);
             $this->onHttpRequest($_request, $_response);
         } catch (\Throwable $e) {
             Server::$instance->getLog()->error($e);
@@ -268,7 +270,7 @@ abstract class AbstractServerPort
         $_response->end();
     }
 
-    public abstract function onHttpRequest(AbstractRequest $request, AbstractResponse $response);
+    public abstract function onHttpRequest(Request $request, Response $response);
 
     /**
      * @param $server
@@ -307,11 +309,11 @@ abstract class AbstractServerPort
             return false;
         }
         /**
-         * @var $_request AbstractRequest
+         * @var $_request Request
          */
         $_request = DIGet(AbstractRequest::class);
         $_request->load($request);
-        setContextValue("request", $_request);
+        setContextValueWithClass("request", $_request, Request::class);
 
         $success = $this->onWsPassCustomHandshake($_request);
         if (!$success) return false;
@@ -345,7 +347,7 @@ abstract class AbstractServerPort
         });
     }
 
-    public abstract function onWsPassCustomHandshake(AbstractRequest $request): bool;
+    public abstract function onWsPassCustomHandshake(Request $request): bool;
 
     /**
      * @param $server
@@ -360,17 +362,17 @@ abstract class AbstractServerPort
         }
         try {
             /**
-             * @var $_request AbstractRequest
+             * @var $_request Request
              */
             $_request = DIGet(AbstractRequest::class);
             $_request->load($request);
-            setContextValue("request", $_request);
+            setContextValueWithClass("request", $_request, Request::class);
             $this->onWsOpen($_request);
         } catch (\Throwable $e) {
             Server::$instance->getLog()->error($e);
         }
     }
 
-    public abstract function onWsOpen(AbstractRequest $request);
+    public abstract function onWsOpen(Request $request);
 
 }

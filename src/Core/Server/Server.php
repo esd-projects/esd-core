@@ -149,8 +149,8 @@ abstract class Server
         //合并ServerConfig配置
         $this->serverConfig->merge();
         //配置DI容器
-        $this->container->set(Response::class, new ResponseProxy());
-        $this->container->set(Request::class, new RequestProxy());
+        $this->container->set(Request::class, new ResponseProxy());
+        $this->container->set(Response::class, new RequestProxy());
         set_exception_handler(function ($e) {
             $this->getLog()->error($e);
         });

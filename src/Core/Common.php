@@ -138,7 +138,7 @@ function getContextValueByClassName($key)
 
 
 /**
- * 获取上下文值
+ * 设置上下文值
  * @param $key
  * @param $value
  * @return mixed
@@ -146,6 +146,18 @@ function getContextValueByClassName($key)
 function setContextValue($key, $value)
 {
     getContext()->add($key, $value);
+}
+
+/**
+ * 设置上下文值
+ * @param $key
+ * @param $value
+ * @param $class
+ * @return mixed
+ */
+function setContextValueWithClass($key, $value, $class)
+{
+    getContext()->addWithClass($key, $value, $class);
 }
 
 /**

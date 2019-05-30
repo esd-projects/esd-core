@@ -9,8 +9,8 @@
 namespace ESD\Core\Server\Port;
 
 
-use ESD\Core\Server\Beans\Request;
-use ESD\Core\Server\Beans\Response;
+use ESD\Core\Server\Beans\AbstractRequest;
+use ESD\Core\Server\Beans\AbstractResponse;
 use ESD\Core\Server\Beans\WebSocketFrame;
 
 interface IServerPort
@@ -23,11 +23,11 @@ interface IServerPort
 
     public function onUdpPacket(string $data, array $client_info);
 
-    public function onHttpRequest(Request $request, Response $response);
+    public function onHttpRequest(AbstractRequest $request, AbstractResponse $response);
 
     public function onWsMessage(WebSocketFrame $frame);
 
-    public function onWsOpen(Request $request);
+    public function onWsOpen(AbstractRequest $request);
 
-    public function onWsPassCustomHandshake(Request $request): bool;
+    public function onWsPassCustomHandshake(AbstractRequest $request): bool;
 }

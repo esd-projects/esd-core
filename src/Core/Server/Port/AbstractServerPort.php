@@ -10,8 +10,8 @@ namespace ESD\Core\Server\Port;
 
 
 use ESD\Core\Context\Context;
-use ESD\Core\Server\Beans\Request;
-use ESD\Core\Server\Beans\Response;
+use ESD\Core\Server\Beans\AbstractRequest;
+use ESD\Core\Server\Beans\AbstractResponse;
 use ESD\Core\Server\Beans\WebSocketCloseFrame;
 use ESD\Core\Server\Beans\WebSocketFrame;
 use ESD\Core\Server\Config\PortConfig;
@@ -238,8 +238,7 @@ abstract class AbstractServerPort
     /**
      * @param $request
      * @param $response
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
+     * @throws \Exception
      */
     public function _onRequest($request, $response)
     {
@@ -248,8 +247,19 @@ abstract class AbstractServerPort
             $response->end("server is not ready");
             return;
         }
-        $_request = new Request($request);
-        $_response = new Response($response);
+
+        /**
+         * @var $_request AbstractRequest
+         */
+        $_request = DIGet(AbstractRequest::class);
+        $_request->load($request);
+
+        /**
+         * @var $_response AbstractResponse
+         */
+        $_response = DIGet(AbstractResponse::class);
+        $_response->load($response);
+
         try {
             setContextValue("request", $_request);
             setContextValue("response", $_response);
@@ -260,7 +270,7 @@ abstract class AbstractServerPort
         $_response->end("");
     }
 
-    public abstract function onHttpRequest(Request $request, Response $response);
+    public abstract function onHttpRequest(AbstractRequest $request, AbstractResponse $response);
 
     /**
      * @param $server
@@ -292,6 +302,7 @@ abstract class AbstractServerPort
      * @param $request
      * @param $response
      * @return bool
+     * @throws \Exception
      */
     public function _onHandshake($request, $response)
     {
@@ -299,8 +310,13 @@ abstract class AbstractServerPort
         if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
             return false;
         }
-        $_request = new Request($request);
+        /**
+         * @var $_request AbstractRequest
+         */
+        $_request = DIGet(AbstractRequest::class);
+        $_request->load($request);
         setContextValue("request", $_request);
+
         $success = $this->onWsPassCustomHandshake($_request);
         if (!$success) return false;
         // websocket握手连接算法验证
@@ -333,7 +349,7 @@ abstract class AbstractServerPort
         });
     }
 
-    public abstract function onWsPassCustomHandshake(Request $request): bool;
+    public abstract function onWsPassCustomHandshake(AbstractRequest $request): bool;
 
     /**
      * @param $server
@@ -349,7 +365,11 @@ abstract class AbstractServerPort
             return;
         }
         try {
-            $_request = new Request($request);
+            /**
+             * @var $_request AbstractRequest
+             */
+            $_request = DIGet(AbstractRequest::class);
+            $_request->load($request);
             setContextValue("request", $_request);
             $this->onWsOpen($_request);
         } catch (\Throwable $e) {
@@ -357,6 +377,6 @@ abstract class AbstractServerPort
         }
     }
 
-    public abstract function onWsOpen(Request $request);
+    public abstract function onWsOpen(AbstractRequest $request);
 
 }

@@ -13,16 +13,16 @@ class RequestProxy
 {
     public function __get($name)
     {
-        return getDeepContextValueByClassName(Request::class)->$name;
+        return getDeepContextValueByClassName(AbstractRequest::class)->$name;
     }
 
     public function __set($name, $value)
     {
-        getDeepContextValueByClassName(Request::class)->$name = $value;
+        getDeepContextValueByClassName(AbstractRequest::class)->$name = $value;
     }
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array([getDeepContextValueByClassName(Request::class), $name], $arguments);
+        return call_user_func_array([getDeepContextValueByClassName(AbstractRequest::class), $name], $arguments);
     }
 }

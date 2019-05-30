@@ -96,8 +96,6 @@ class ProcessManager
 
     /**
      * @return ProcessConfig[]
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ReflectionException
      */
@@ -137,8 +135,6 @@ class ProcessManager
 
     /**
      * 构建进程
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \ESD\Core\Plugins\Config\ConfigException
      * @throws \ReflectionException
      */

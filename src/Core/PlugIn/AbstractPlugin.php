@@ -32,8 +32,6 @@ abstract class AbstractPlugin extends Order implements PluginInterface
 
     /**
      * AbstractPlugin constructor.
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function __construct()
     {

@@ -135,8 +135,6 @@ abstract class Server
                 return new ServerContextBuilder($this);
             });
         $this->context = $contextBuilder->build();
-        //合并ServerConfig配置
-        $this->serverConfig->merge();
         //-------------------------------------------------------------------------------------
         $this->portManager = new PortManager($this, $defaultPortClass);
         $this->processManager = new ProcessManager($this, $defaultProcessClass);
@@ -148,6 +146,8 @@ abstract class Server
         $this->basePlugManager->order();
         $this->basePlugManager->init($this->context);
         $this->basePlugManager->beforeServerStart($this->context);
+        //合并ServerConfig配置
+        $this->serverConfig->merge();
         //配置DI容器
         $this->container->set(Response::class, new ResponseProxy());
         $this->container->set(Request::class, new RequestProxy());
@@ -195,8 +195,6 @@ abstract class Server
      * 添加插件和添加配置只能在configure之前
      * 配置服务
      * @throws ConfigException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      * @throws \ESD\Core\Exception
      * @throws \ReflectionException
      */
@@ -299,8 +297,6 @@ abstract class Server
 
     /**
      * 启动
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function _onStart()
     {
@@ -317,8 +313,6 @@ abstract class Server
 
     /**
      * 关闭
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function _onShutdown()
     {
@@ -337,8 +331,6 @@ abstract class Server
      * @param int $worker_pid
      * @param int $exit_code
      * @param int $signal
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function _onWorkerError($serv, int $worker_id, int $worker_pid, int $exit_code, int $signal)
     {
@@ -351,10 +343,6 @@ abstract class Server
         }
     }
 
-    /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     */
     public function _onManagerStart()
     {
         Server::$isStart = true;
@@ -366,10 +354,6 @@ abstract class Server
         }
     }
 
-    /**
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     */
     public function _onManagerStop()
     {
         $this->processManager->getManagerProcess()->onProcessStop();
@@ -383,8 +367,6 @@ abstract class Server
     /**
      * @param $server
      * @param int $worker_id
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function _onWorkerStart($server, int $worker_id)
     {
@@ -746,8 +728,6 @@ abstract class Server
 
     /**
      * @return EventDispatcher
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function getEventDispatcher(): EventDispatcher
     {
@@ -764,8 +744,6 @@ abstract class Server
 
     /**
      * @return LoggerInterface
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function getLog(): LoggerInterface
     {
@@ -774,8 +752,6 @@ abstract class Server
 
     /**
      * @return ConfigContext
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function getConfigContext(): ConfigContext
     {

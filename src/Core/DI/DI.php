@@ -69,8 +69,6 @@ class DI
      * @param $name
      * @param array $params
      * @return mixed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function get($name, $params = [])
     {

@@ -171,6 +171,13 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     }
 
     /**
+     * 创建一个新对象，配合detach使用
+     * @param $fd
+     * @return static
+     */
+    abstract public static function create($fd);
+
+    /**
      * 加载
      * @param null $realObject
      * @return mixed
@@ -200,5 +207,4 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
      * @param int $http_code
      */
     abstract public function redirect(string $url, int $http_code = 302);
-
 }

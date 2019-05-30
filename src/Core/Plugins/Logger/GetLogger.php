@@ -22,8 +22,6 @@ trait GetLogger
      * @param $level
      * @param $message
      * @param array $context
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function log($level, $message, array $context = array())
     {
@@ -38,8 +36,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function debug($message, array $context = array())
     {
@@ -53,8 +49,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function addRecord($level, $message, array $context = array())
     {
@@ -69,8 +63,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function info($message, array $context = array())
     {
@@ -85,8 +77,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function notice($message, array $context = array())
     {
@@ -101,8 +91,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function warn($message, array $context = array())
     {
@@ -117,8 +105,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function warning($message, array $context = array())
     {
@@ -133,8 +119,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function err($message, array $context = array())
     {
@@ -149,8 +133,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function error($message, array $context = array())
     {
@@ -165,8 +147,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function crit($message, array $context = array())
     {
@@ -181,8 +161,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function critical($message, array $context = array())
     {
@@ -197,8 +175,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function alert($message, array $context = array())
     {
@@ -213,8 +189,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function emerg($message, array $context = array())
     {
@@ -229,8 +203,6 @@ trait GetLogger
      * @param  string $message The log message
      * @param  array $context The log context
      * @return void Whether the record has been processed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function emergency($message, array $context = array())
     {

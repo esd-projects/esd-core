@@ -193,7 +193,6 @@ function clearDir($path = null)
  * @param $name
  * @param array $params
  * @return mixed
- * @throws Exception
  */
 function DIGet($name, $params = [])
 {
@@ -204,7 +203,6 @@ function DIGet($name, $params = [])
  * @param $name
  * @param $value
  * @return mixed
- * @throws Exception
  */
 function DISet($name, $value)
 {

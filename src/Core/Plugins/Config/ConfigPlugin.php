@@ -44,8 +44,6 @@ class ConfigPlugin extends AbstractPlugin
      * ConfigPlugin constructor.
      * @param ConfigConfig|null $configConfig
      * @throws \ESD\Core\Exception
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function __construct(?ConfigConfig $configConfig = null)
     {

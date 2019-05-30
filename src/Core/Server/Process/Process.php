@@ -236,8 +236,6 @@ abstract class Process
 
     /**
      * 进程启动的回调
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function _onProcessStart()
     {

@@ -43,8 +43,6 @@ class BaseConfig
     /**
      * 当设置好配置后将合并配置
      * @throws ConfigException
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function merge()
     {

@@ -56,10 +56,8 @@ trait MessageTrait
         if ($this->protocol === $version) {
             return $this;
         }
-
-        $new = clone $this;
-        $new->protocol = $version;
-        return $new;
+        $this->protocol = $version;
+        return $this;
     }
 
     /**
@@ -185,11 +183,10 @@ trait MessageTrait
      */
     public function withHeaders(array $headers)
     {
-        $new = clone $this;
         foreach ($headers as $name => $value) {
-            $new = $new->withHeader(str_replace('_', '-', $name), $value);
+            $this->withHeader(str_replace('_', '-', $name), $value);
         }
-        return $new;
+        return $this;
     }
 
     /**
@@ -297,9 +294,8 @@ trait MessageTrait
             return $this;
         }
 
-        $new = clone $this;
-        $new->stream = $body;
-        return $new;
+        $this->stream = $body;
+        return $this;
     }
 
     /**

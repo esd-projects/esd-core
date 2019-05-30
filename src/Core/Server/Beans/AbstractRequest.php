@@ -4,6 +4,7 @@
 namespace ESD\Core\Server\Beans;
 
 
+use ESD\Core\Server\Beans\Http\InteractsWithInput;
 use ESD\Core\Server\Beans\Http\MessageTrait;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,6 +33,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
     const SERVER_SERVER_PROTOCOL = "server_protocol";
 
     use MessageTrait;
+
+    use InteractsWithInput;
 
     /**
      * @var array
@@ -66,9 +69,9 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
     protected $cookieParams = [];
 
     /**
-     * @var null|array|object
+     * @var array
      */
-    protected $parsedBody;
+    protected $parsedBody = [];
 
     /**
      * @var array
@@ -78,19 +81,7 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
     /**
      * @var array
      */
-    protected $serverParams = [];
-
-    /**
-     * @var array
-     */
     protected $uploadedFiles = [];
-
-    /**
-     * the body of parser
-     *
-     * @var mixed
-     */
-    protected $bodyParams;
 
     /**
      * @var int
@@ -106,6 +97,24 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      * @var array
      */
     protected $files;
+
+    /**
+     * @param string $name
+     * @param null $default
+     * @return mixed|null
+     */
+    public function getServer(string $name, $default = null)
+    {
+        return $this->server[$name] ?? $default;
+    }
+
+    /**
+     * @return array
+     */
+    public function getServers()
+    {
+        return $this->server;
+    }
 
     /**
      * Retrieves the message's request target.
@@ -193,9 +202,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
         if (! in_array($method, $methods)) {
             throw new \InvalidArgumentException('Invalid Method');
         }
-        $new = clone $this;
-        $new->method = $method;
-        return $new;
+        $this->method = $method;
+        return $this;
     }
 
     /**
@@ -208,7 +216,7 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function getServerParams()
     {
-        return $this->serverParams;
+        return $this->server;
     }
 
     /**
@@ -219,9 +227,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withServerParams(array $serverParams)
     {
-        $clone = clone $this;
-        $clone->serverParams = $serverParams;
-        return $clone;
+        $this->server = $serverParams;
+        return $this;
     }
 
     /**
@@ -253,9 +260,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withCookieParams(array $cookies)
     {
-        $clone = clone $this;
-        $clone->cookieParams = $cookies;
-        return $clone;
+        $this->cookieParams = $cookies;
+        return $this;
     }
 
     /**
@@ -283,10 +289,9 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function addQueryParam(string $name, $value)
     {
-        $clone = clone $this;
-        $clone->queryParams[$name] = $value;
+        $this->queryParams[$name] = $value;
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -310,9 +315,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withQueryParams(array $query)
     {
-        $clone = clone $this;
-        $clone->queryParams = $query;
-        return $clone;
+        $this->queryParams = $query;
+        return $this;
     }
 
     /**
@@ -342,9 +346,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        $clone = clone $this;
-        $clone->uploadedFiles = $uploadedFiles;
-        return $clone;
+        $this->uploadedFiles = $uploadedFiles;
+        return $this;
     }
 
     /**
@@ -376,22 +379,10 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
     public function addParserBody(string $name, $value)
     {
         if (is_array($this->parsedBody)) {
-            $clone = clone $this;
-            $clone->parsedBody[$name] = $value;
-
-            return $clone;
+            $this->parsedBody[$name] = $value;
+            return $this;
         }
         return $this;
-    }
-
-    /**
-     * return parser result of body
-     *
-     * @return mixed
-     */
-    public function getBodyParams()
-    {
-        return $this->bodyParams;
     }
 
     /**
@@ -419,25 +410,9 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withParsedBody($data)
     {
-        $clone = clone $this;
-        $clone->parsedBody = $data;
-        return $clone;
+        $this->parsedBody = $data;
+        return $this;
     }
-
-    /**
-     * init body params from parser result
-     *
-     * @param mixed $data
-     *
-     * @return static
-     */
-    public function withBodyParams($data)
-    {
-        $clone = clone $this;
-        $clone->bodyParams = $data;
-        return $clone;
-    }
-
 
     /**
      * Retrieve attributes derived from the request.
@@ -487,9 +462,8 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withAttribute($name, $value)
     {
-        $clone = clone $this;
-        $clone->attributes[$name] = $value;
-        return $clone;
+        $this->attributes[$name] = $value;
+        return $this;
     }
 
     /**
@@ -510,10 +484,9 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
             return $this;
         }
 
-        $clone = clone $this;
-        unset($clone->attributes[$name]);
+        unset($this->attributes[$name]);
 
-        return $clone;
+        return $this;
     }
 
     /**
@@ -561,14 +534,13 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
             return $this;
         }
 
-        $new = clone $this;
-        $new->uri = $uri;
+        $this->uri = $uri;
 
         if (! $preserveHost) {
-            $new->updateHostFromUri();
+            $this->updateHostFromUri();
         }
 
-        return $new;
+        return $this;
     }
 
     /**

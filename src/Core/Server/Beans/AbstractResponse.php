@@ -89,9 +89,8 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
      */
     public function withAttribute($name, $value)
     {
-        $clone = clone $this;
-        $clone->attributes[$name] = $value;
-        return $clone;
+        $this->attributes[$name] = $value;
+        return $this;
     }
 
     /**
@@ -126,9 +125,8 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = ''): self
     {
-        $clone = clone $this;
-        $clone->statusCode = (int)$code;
-        return $clone;
+        $this->statusCode = (int)$code;
+        return $this;
     }
 
     public function getReasonPhrase()
@@ -174,23 +172,20 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
      */
     public function withCookie(Cookie $cookie)
     {
-        $clone = clone $this;
-        $clone->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
-        return $clone;
+        $this->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
+        return $this;
     }
 
     public function withContent(string $content = '')
     {
-        $clone = clone $this;
-        $clone->stream = new HttpStream($content);
-        return $clone;
+        $this->stream = new HttpStream($content);
+        return $this;
     }
 
     public function appendBody(string $body)
     {
-        $clone = clone $this;
-        $clone->stream->write($body);
-        return $clone;
+        $this->stream->write($body);
+        return $this;
     }
 
     /**

@@ -4,6 +4,7 @@
 namespace ESD\Core\Server\Beans;
 
 use ESD\Core\Server\Beans\Http\Cookie;
+use ESD\Core\Server\Beans\Http\HttpStream;
 use ESD\Core\Server\Beans\Http\MessageTrait;
 
 abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
@@ -38,7 +39,7 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     /**
      * @var int
      */
-    protected $fd;
+    protected $fd = 0;
 
     /**
      * Retrieve attributes derived from the request.
@@ -175,6 +176,13 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     {
         $clone = clone $this;
         $clone->cookies[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
+        return $clone;
+    }
+
+    public function withContent(string $content = '')
+    {
+        $clone = clone $this;
+        $clone->stream = new HttpStream($content);
         return $clone;
     }
 

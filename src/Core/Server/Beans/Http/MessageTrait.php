@@ -12,7 +12,7 @@ trait MessageTrait
     /**
      * @var array 存放headers的小写name
      */
-    protected $headerNames;
+    protected $headerNames = [];
 
     /**
      * @var array
@@ -27,7 +27,7 @@ trait MessageTrait
     /**
      * @var StreamInterface
      */
-    protected $stream;
+    protected $stream = null;
 
     /**
      * Retrieves the HTTP protocol version as a string.
@@ -305,9 +305,9 @@ trait MessageTrait
     /**
      * Gets the body of the message.
      *
-     * @return string Returns the body
+     * @return StreamInterface Returns the body
      */
-    public function getBody()
+    public function getBody() : StreamInterface
     {
         if (!$this->stream) {
             $this->stream = new HttpStream('');

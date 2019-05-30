@@ -161,7 +161,7 @@ class HttpStream implements StreamInterface
      */
     public function write($string)
     {
-        throw new \BadMethodCallException('Not implemented');
+        $this->contents .= $string;
     }
 
     /**

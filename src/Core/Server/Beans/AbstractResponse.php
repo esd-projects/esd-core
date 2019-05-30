@@ -4,6 +4,7 @@
 namespace ESD\Core\Server\Beans;
 
 use ESD\Core\Server\Beans\Http\Cookie;
+use ESD\Core\Server\Beans\Http\HttpStream;
 use ESD\Core\Server\Beans\Http\MessageTrait;
 
 abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
@@ -181,7 +182,7 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     public function appendBody(string $body)
     {
         $clone = clone $this;
-        $clone->stream .= $body;
+        $clone->stream->write($body);
         return $clone;
     }
 

@@ -31,6 +31,16 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     protected $cookies = [];
 
     /**
+     * @var bool
+     */
+    protected $isEnd = false;
+
+    /**
+     * @var int
+     */
+    protected $fd;
+
+    /**
      * Retrieve attributes derived from the request.
      * The request "attributes" may be used to allow injection of any
      * parameters derived from the request: e.g., the results of path

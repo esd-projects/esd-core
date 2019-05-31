@@ -167,14 +167,14 @@ trait MessageTrait
         $value = $this->trimHeaderValues($value);
         $normalized = strtolower($name);
 
-        $new = clone $this;
-        if (isset($new->headerNames[$normalized])) {
-            unset($new->headers[$new->headerNames[$normalized]]);
-        }
-        $new->headerNames[$normalized] = $name;
-        $new->headers[$name] = $value;
 
-        return $new;
+        if (isset($this->headerNames[$normalized])) {
+            unset($this->headers[$this->headerNames[$normalized]]);
+        }
+        $this->headerNames[$normalized] = $name;
+        $this->headers[$name] = $value;
+
+        return $this;
     }
 
     /**
@@ -212,16 +212,15 @@ trait MessageTrait
         $value = $this->trimHeaderValues($value);
         $normalized = strtolower($name);
 
-        $new = clone $this;
-        if (isset($new->headerNames[$normalized])) {
-            $name = $this->headerNames[$normalized];
-            $new->headers[$name] = array_merge($this->headers[$name], $value);
+        if (isset($this->headerNames[$normalized])) {
+            $this->headerNames[$normalized];
+            $this->headers[$name] = array_merge($this->headers[$name], $value);
         } else {
-            $new->headerNames[$normalized] = $name;
-            $new->headers[$name] = $value;
+            $this->headerNames[$normalized] = $name;
+            $this->headers[$name] = $value;
         }
 
-        return $new;
+        return $this;
     }
 
     /**
@@ -244,10 +243,9 @@ trait MessageTrait
 
         $name = $this->headerNames[$normalized];
 
-        $new = clone $this;
-        unset($new->headers[$name], $new->headerNames[$normalized]);
+        unset($this->headers[$name], $this->headerNames[$normalized]);
 
-        return $new;
+        return $this;
     }
 
     /**

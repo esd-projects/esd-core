@@ -242,7 +242,7 @@ trait MessageTrait
         }
 
         $name = $this->headerNames[$normalized];
-        
+
         unset($this->headers[$name], $this->headerNames[$normalized]);
 
         return $this;

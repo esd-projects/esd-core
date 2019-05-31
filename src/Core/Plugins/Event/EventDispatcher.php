@@ -113,7 +113,10 @@ class EventDispatcher
     public function dispatchEvent(Event $event)
     {
         if (Server::$instance->getProcessManager() != null) {
-            $event->setProcessId(Server::$instance->getProcessManager()->getCurrentProcessId());
+            //有可能是跨进程的事件，这里就不会覆盖processid
+            if ($event->getProcessId() === null) {
+                $event->setProcessId(Server::$instance->getProcessManager()->getCurrentProcessId());
+            }
         }
         if (!array_key_exists($event->getType(), $this->eventCalls)) {
             return; // no need to do anything

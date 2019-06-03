@@ -106,9 +106,11 @@ class EventDispatcher
     {
         $this->order();
         //先添加EventFormInfo,添加消息派发方的信息
-        foreach ($this->orderList as $order) {
-            if ($order instanceof AbstractEventDispatcher) {
-                $order->handleEventFrom($event);
+        if (empty($event->getProgress())) {
+            foreach ($this->orderList as $order) {
+                if ($order instanceof AbstractEventDispatcher) {
+                    $order->handleEventFrom($event);
+                }
             }
         }
         //派发消息

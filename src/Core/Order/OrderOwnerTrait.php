@@ -31,7 +31,7 @@ trait OrderOwnerTrait
     public function addOrder(Order $order)
     {
         $this->fixed = false;
-        $this->orderList[] = $order;
+        $this->orderList[$order->getName()] = $order;
         $this->orderClassList[get_class($order)] = $order;
     }
 

@@ -1,33 +1,41 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: 白猫
- * Date: 2019/4/18
- * Time: 9:20
+ * User: administrato
+ * Date: 2019/6/3
+ * Time: 10:29
  */
 
 namespace ESD\Core\Plugins\Event;
 
-use ESD\Core\Server\Process\Process;
-use ESD\Core\Server\Server;
 
-/**
- * 事件派发器
- * Class EventDispatcher
- * @package ESD\BaseServer\Plugins\Event
- */
+use ESD\Core\Order\OrderOwnerTrait;
+use ESD\Core\Server\Process\Process;
+
 class EventDispatcher
 {
+    use OrderOwnerTrait;
+
+    /**
+     * @var array
+     */
     private $eventCalls = [];
 
     /**
-     * @var Server
+     * @param AbstractEventDispatcher $eventDispatcher
      */
-    private $server;
-
-    public function __construct(Server $server)
+    public function addEventDispatcher(AbstractEventDispatcher $eventDispatcher)
     {
-        $this->server = $server;
+        $this->addOrder($eventDispatcher);
+    }
+
+    /**
+     * @param string $name
+     * @return AbstractEventDispatcher|null
+     */
+    public function getEventDispatcher(string $name): ?AbstractEventDispatcher
+    {
+        return $this->orderClassList[$name] ?? null;
     }
 
     /**
@@ -87,22 +95,6 @@ class EventDispatcher
     }
 
     /**
-     * send event to process
-     * @param Event $event
-     * @param Process ...$toProcess
-     */
-    public function dispatchProcessEvent(Event $event, Process ... $toProcess)
-    {
-        $event->setProcessId(Server::$instance->getProcessManager()->getCurrentProcessId());
-        if ($toProcess == null) {
-            $this->dispatchEvent($event);
-        }
-        foreach ($toProcess as $process) {
-            $this->server->getProcessManager()->getCurrentProcess()->sendMessage(new EventMessage($event), $process);
-        }
-    }
-
-    /**
      * Dispatches an event to all objects that have registered listeners for its type.
      * If an event with enabled 'bubble' property is dispatched to a display object, it will
      * travel up along the line of parents, until it either hits the root object or someone
@@ -112,41 +104,64 @@ class EventDispatcher
      */
     public function dispatchEvent(Event $event)
     {
-        if (Server::$instance->getProcessManager() != null) {
-            //有可能是跨进程的事件，这里就不会覆盖processid
-            if ($event->getProcessId() === null) {
-                $event->setProcessId(Server::$instance->getProcessManager()->getCurrentProcessId());
+        $this->order();
+        //先添加EventFormInfo,添加消息派发方的信息
+        foreach ($this->orderList as $order) {
+            if ($order instanceof AbstractEventDispatcher) {
+                $order->handleEventFrom($event);
             }
         }
-        if (!array_key_exists($event->getType(), $this->eventCalls)) {
-            return; // no need to do anything
+        //派发消息
+        $start = false;
+        if (empty($event->getProgress())) $start = true;
+        foreach ($this->orderList as $order) {
+            if ($order instanceof AbstractEventDispatcher) {
+                if ($start == false && $event->getProgress() == $order->getName()) {
+                    $start = true;
+                    continue;
+                }
+                if ($start) {
+                    $event->setProgress($order->getName());
+                    $result = $order->dispatchEvent($event);
+                    if (!$result) break;
+                }
+            }
         }
-        $this->invokeEvent($event);
     }
 
     /**
-     * @private
-     * Invokes an event on the current object.
-     * This method does not do any bubbling, nor
-     * does it back-up and restore the previous target on the event. The 'dispatchEvent'
-     * method uses this method internally.
-     *
+     * send event to process
      * @param Event $event
+     * @param Process ...$toProcess
      */
-    private function invokeEvent($event)
+    public function dispatchProcessEvent(Event $event, Process ... $toProcess)
     {
-        if (array_key_exists($event->getType(), $this->eventCalls)) {
-            $calls = $this->eventCalls [$event->getType()];
-        } else {
-            return;
+        $pids = [];
+        foreach ($toProcess as $process) {
+            $pids[] = $process->getProcessId();
         }
-        foreach ($calls as $call) {
-            if ($call instanceof EventCall) {
-                goWithContext(function () use ($call, $event) {
-                    $call->send($event);
-                });
-            }
-        }
+        $event->setToInfo(ProcessEventDispatcher::type, $pids);
+        $this->dispatchEvent($event);
+    }
+
+    /**
+     * send event to process
+     * @param Event $event
+     * @param array $toProcessIds
+     */
+    public function dispatchProcessIdEvent(Event $event, $toProcessIds)
+    {
+        $event->setToInfo(ProcessEventDispatcher::type, $toProcessIds);
+        $this->dispatchEvent($event);
+    }
+
+    /**
+     * @param $type
+     * @return EventCall[]||null
+     */
+    public function getEventCalls($type): ?array
+    {
+        return $this->eventCalls[$type] ?? null;
     }
 
 }

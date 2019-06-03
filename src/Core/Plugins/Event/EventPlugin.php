@@ -42,6 +42,9 @@ class EventPlugin extends AbstractPlugin
         parent::init($context);
         //创建事件派发器
         $this->eventDispatcher = DIGet(EventDispatcher::class);
+        //添加EventDispatcher类型
+        $this->eventDispatcher->addOrder(new ProcessEventDispatcher());
+        $this->eventDispatcher->addOrder(new TypeEventDispatcher());
     }
 
     /**

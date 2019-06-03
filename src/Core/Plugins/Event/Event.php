@@ -28,15 +28,28 @@ class Event
     private $data;
 
     /**
-     * 消息发出的进程id
-     * @var int
+     * 消息来自的信息
+     * @var array
      */
-    private $processId;
+    private $fromInfo = [];
+
+    /**
+     * 消息去向的信息
+     * @var array
+     */
+    private $toInfo = [];
+
+    /**
+     * 进度
+     * @var string
+     */
+    private $progress;
 
     public function __construct(string $type, $data)
     {
         $this->type = $type;
         $this->data = $data;
+        $this->setToInfo(TypeEventDispatcher::type, [$type]);
     }
 
     /**
@@ -60,15 +73,7 @@ class Event
      */
     public function getProcessId(): ?int
     {
-        return $this->processId;
-    }
-
-    /**
-     * @param int $processId |null
-     */
-    public function setProcessId(?int $processId): void
-    {
-        $this->processId = $processId;
+        return $this->getFromInfo(ProcessEventDispatcher::type);
     }
 
     /**
@@ -77,5 +82,57 @@ class Event
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    /**
+     * @param $type
+     * @return mixed
+     */
+    public function getFromInfo($type)
+    {
+        return $this->fromInfo[$type] ?? null;
+    }
+
+    /**
+     * @param $type
+     * @param $data
+     */
+    public function setFromInfo($type, $data): void
+    {
+        $this->fromInfo[$type] = $data;
+    }
+
+    /**
+     * @param $type
+     * @return mixed
+     */
+    public function getToInfo($type)
+    {
+        return $this->toInfo[$type] ?? null;
+    }
+
+    /**
+     * @param $type
+     * @param $data
+     */
+    public function setToInfo($type, $data): void
+    {
+        $this->toInfo[$type] = $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProgress(): ?string
+    {
+        return $this->progress;
+    }
+
+    /**
+     * @param string $progress
+     */
+    public function setProgress(string $progress): void
+    {
+        $this->progress = $progress;
     }
 }

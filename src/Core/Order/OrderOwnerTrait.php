@@ -9,8 +9,6 @@
 namespace ESD\Core\Order;
 
 
-use ESD\Core\Exception;
-
 trait OrderOwnerTrait
 {
     /**
@@ -29,14 +27,11 @@ trait OrderOwnerTrait
     /**
      * 添加Order
      * @param Order $order
-     * @throws Exception
      */
     public function addOrder(Order $order)
     {
-        if ($this->fixed) {
-            throw new Exception("已经锁定不能添加插件");
-        }
-        $this->orderList[$order->getName()] = $order;
+        $this->fixed = false;
+        $this->orderList[] = $order;
         $this->orderClassList[get_class($order)] = $order;
     }
 
@@ -45,6 +40,7 @@ trait OrderOwnerTrait
      */
     public function order()
     {
+        if ($this->fixed) return;
         foreach ($this->orderList as $order) {
             foreach ($this->getOrderBeforeClass($order) as $needAddAfterOrder) {
                 $needAddAfterOrder->addAfterOrder($order);

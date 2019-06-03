@@ -176,18 +176,48 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
         return $this;
     }
 
-    public function withContent(string $content = '')
+    /**
+     * @param string $content
+     * @return $this
+     */
+    public function withContent($content = '')
     {
+        if($content == null || !is_string($content)) {
+            $content = '';
+        }
         $this->stream = new HttpStream($content);
         return $this;
     }
 
-    public function appendBody(string $body)
+    /**
+     * @param string $content
+     * @return $this
+     */
+    public function appendBody($content)
     {
+        if($content == null || !is_string($content)) {
+            $content = '';
+        }
         if(!$this->stream) {
             $this->stream = new HttpStream('');
         }
-        $this->stream->write($body);
+        $this->stream->write($content);
+        return $this;
+    }
+
+    /**
+     * @param string $content
+     * @return $this
+     */
+    public function append($content)
+    {
+        if($content == null || !is_string($content)) {
+            $content = '';
+        }
+        if(!$this->stream) {
+            $this->stream = new HttpStream('');
+        }
+        $this->stream->write($content);
         return $this;
     }
 

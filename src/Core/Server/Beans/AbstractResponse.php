@@ -206,6 +206,22 @@ abstract class AbstractResponse implements \Psr\Http\Message\ResponseInterface
     }
 
     /**
+     * @param string $content
+     * @return $this
+     */
+    public function append($content)
+    {
+        if($content == null || !is_string($content)) {
+            $content = '';
+        }
+        if(!$this->stream) {
+            $this->stream = new HttpStream('');
+        }
+        $this->stream->write($content);
+        return $this;
+    }
+
+    /**
      * 创建一个新对象，配合detach使用
      * @param $fd
      * @return static

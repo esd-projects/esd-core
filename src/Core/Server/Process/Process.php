@@ -273,6 +273,7 @@ abstract class Process
                 go(function () {
                     while (true) {
                         $recv = $this->socket->recv();
+                        if (empty($recv)) continue;
                         //获取进程id
                         $unpackData = unpack("N", $recv);
                         $processId = $unpackData[1];

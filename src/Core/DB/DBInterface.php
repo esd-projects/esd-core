@@ -13,7 +13,5 @@ interface DBInterface
 {
     public function getType(): string;
 
-    public function startExecute($query);
-
-    public function afterExecute();
+    public function execute($query, callable $call = null);
 }

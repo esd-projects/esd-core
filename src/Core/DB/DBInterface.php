@@ -13,5 +13,5 @@ interface DBInterface
 {
     public function getType(): string;
 
-    public function prepare($query);
+    public function rawQuery($query, $bindParams = null);
 }

@@ -269,12 +269,11 @@ class Uri implements UriInterface
         if ($this->scheme === $scheme) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->scheme = $scheme;
+        $this->scheme = $scheme;
         // TODO add method
-        $clone->removeDefaultPort();
-        $clone->validateState();
-        return $clone;
+        $this->removeDefaultPort();
+        $this->validateState();
+        return $this;
     }
 
     /**
@@ -298,9 +297,8 @@ class Uri implements UriInterface
         if ($this->userInfo === $info) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->userInfo = $user;
-        $clone->validateState();
+        $this->userInfo = $user;
+        $this->validateState();
         return $this;
     }
 
@@ -320,10 +318,9 @@ class Uri implements UriInterface
         if ($this->host === $host) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->host = $host;
-        $clone->validateState();
-        return $clone;
+        $this->host = $host;
+        $this->validateState();
+        return $this;
     }
 
     /**
@@ -346,10 +343,9 @@ class Uri implements UriInterface
         if ($this->port === $port) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->port = $port;
-        $clone->validateState();
-        return $clone;
+        $this->port = $port;
+        $this->validateState();
+        return $this;
     }
 
     /**
@@ -376,10 +372,9 @@ class Uri implements UriInterface
         if ($this->path === $path) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->path = $path;
-        $clone->validateState();
-        return $clone;
+        $this->path = $path;
+        $this->validateState();
+        return $this;
     }
 
     /**
@@ -400,9 +395,8 @@ class Uri implements UriInterface
         if ($this->query === $query) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->query = $query;
-        return $clone;
+        $this->query = $query;
+        return $this;
     }
 
     /**
@@ -461,9 +455,8 @@ class Uri implements UriInterface
         if ($this->fragment === $fragment) {
             return $this;
         }
-        $clone = clone $this;
-        $clone->fragment = $fragment;
-        return $clone;
+        $this->fragment = $fragment;
+        return $this;
     }
 
     /**

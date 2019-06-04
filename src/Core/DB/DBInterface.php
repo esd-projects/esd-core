@@ -11,7 +11,7 @@ namespace ESD\Core\DB;
 
 interface DBInterface
 {
-    public function getType(): string;
+    public function getType();
 
     public function execute(callable $call = null);
 

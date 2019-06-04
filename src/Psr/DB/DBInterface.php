@@ -6,7 +6,7 @@
  * Time: 15:45
  */
 
-namespace ESD\Core\DB;
+namespace ESD\Psr\DB;
 
 
 interface DBInterface

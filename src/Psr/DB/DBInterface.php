@@ -13,7 +13,7 @@ interface DBInterface
 {
     public function getType();
 
-    public function execute(callable $call = null);
+    public function execute($name, callable $call = null);
 
     public function getLastQuery();
 }

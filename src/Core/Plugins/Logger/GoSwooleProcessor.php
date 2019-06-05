@@ -53,6 +53,7 @@ class GoSwooleProcessor implements ProcessorInterface
                     'cid' => Coroutine::getCid()
                 )
             );
+            $record['user'] = LoggerExtra::get()->getContext();
         }
         $this->setLength($record);
         return $record;

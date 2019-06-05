@@ -26,7 +26,7 @@ class LoggerConfig extends BaseConfig
     /**
      * @var string
      */
-    protected $output = "%datetime% \e[32m%level_name%\e[0m %extra.about_process% %extra.class_and_func% : %message% %context% \n";
+    protected $output = "%datetime% \e[32m%level_name%\e[0m %user% %extra.about_process% %extra.class_and_func% : %message% %context% \n";
     /**
      * @var string|null
      */

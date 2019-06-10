@@ -77,14 +77,6 @@ class Event
     }
 
     /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
-    /**
      * @param $type
      * @return mixed
      */

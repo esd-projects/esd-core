@@ -9,6 +9,7 @@
 use ESD\Core\Context\ContextManager;
 use ESD\Core\DI\DI;
 use ESD\Core\Runtime;
+use Psr\Log\LoggerInterface;
 
 const HOOK_TCP = SWOOLE_HOOK_TCP;//TCP Socket类型的stream
 const HOOK_UDP = SWOOLE_HOOK_UDP;//UDP Socket类型的stream
@@ -103,7 +104,7 @@ function goWithContext(callable $run)
             try {
                 $run();
             } catch (Throwable $e) {
-                DIGet(\Psr\Log\LoggerInterface::class)->error($e);
+                DIGet(LoggerInterface::class)->error($e);
             }
         });
     } else {

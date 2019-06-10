@@ -342,11 +342,7 @@ abstract class AbstractServerPort
         }
         $response->status(101);
         $response->end();
-        $this->server->defer(function () use ($request) {
-            go(function () use ($request) {
-                $this->_onOpen($this->server->getServer(), $request);
-            });
-        });
+        $this->_onOpen($this->server->getServer(), $request);
     }
 
     public abstract function onWsPassCustomHandshake(Request $request): bool;

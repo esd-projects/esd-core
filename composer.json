@@ -1,5 +1,6 @@
 {
   "require": {
+    "esd/esd-psr": "~0.1",
     "monolog/monolog": "^1.24",
     "symfony/console": "^4.2",
     "symfony/yaml": "^4.2",

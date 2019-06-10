@@ -100,7 +100,11 @@ function goWithContext(callable $run)
             $currentContext = getContext();
             //重新设置他的父类为上级协程
             $currentContext->setParentContext($context);
-            $run();
+            try {
+                $run();
+            } catch (Throwable $e) {
+                DIGet(\Psr\Log\LoggerInterface::class)->error($e);
+            }
         });
     } else {
         $run();

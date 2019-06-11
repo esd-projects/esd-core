@@ -154,7 +154,7 @@ class BaseConfig
     /**
      * 从config中获取配置
      * @param $config
-     * @return BaseConfig
+     * @return static
      */
     public function buildFromConfig($config)
     {

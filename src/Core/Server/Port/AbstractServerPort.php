@@ -163,6 +163,7 @@ abstract class AbstractServerPort
 
     public function _onConnect($server, int $fd, int $reactorId)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         try {
             $this->onTcpConnect($fd, $reactorId);
         } catch (\Throwable $e) {
@@ -174,6 +175,7 @@ abstract class AbstractServerPort
 
     public function _onClose($server, int $fd, int $reactorId)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         try {
             $port = Server::$instance->getPortManager()->getPortFromFd($fd);
             if (Server::$instance->isEstablished($fd)) {
@@ -192,6 +194,7 @@ abstract class AbstractServerPort
 
     public function _onReceive($server, int $fd, int $reactorId, string $data)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         try {
             $this->onTcpReceive($fd, $reactorId, $data);
         } catch (\Throwable $e) {
@@ -208,6 +211,7 @@ abstract class AbstractServerPort
      */
     public function _onPacket($server, string $data, array $clientInfo)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         try {
             $this->onUdpPacket($data, $clientInfo);
         } catch (\Throwable $e) {
@@ -224,6 +228,8 @@ abstract class AbstractServerPort
      */
     public function _onRequest($request, $response)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
+
         /**
          * @var $_request Request
          */
@@ -254,6 +260,7 @@ abstract class AbstractServerPort
      */
     public function _onMessage($server, $frame)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         try {
             if (isset($frame->code)) {
                 //是个CloseFrame
@@ -276,6 +283,7 @@ abstract class AbstractServerPort
      */
     public function _onHandshake($request, $response)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         /**
          * @var $_request Request
          */
@@ -325,6 +333,7 @@ abstract class AbstractServerPort
      */
     public function _onOpen($server, $request)
     {
+        Server::$instance->getProcessManager()->getCurrentProcess()->waitReady();
         try {
             /**
              * @var $_request Request

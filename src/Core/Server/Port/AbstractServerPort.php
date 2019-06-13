@@ -163,11 +163,6 @@ abstract class AbstractServerPort
 
     public function _onConnect($server, int $fd, int $reactorId)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            $this->server->closeFd($fd);
-            return;
-        }
         try {
             $this->onTcpConnect($fd, $reactorId);
         } catch (\Throwable $e) {
@@ -179,10 +174,6 @@ abstract class AbstractServerPort
 
     public function _onClose($server, int $fd, int $reactorId)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            return;
-        }
         try {
             $port = Server::$instance->getPortManager()->getPortFromFd($fd);
             if (Server::$instance->isEstablished($fd)) {
@@ -201,11 +192,6 @@ abstract class AbstractServerPort
 
     public function _onReceive($server, int $fd, int $reactorId, string $data)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            $this->server->closeFd($fd);
-            return;
-        }
         try {
             $this->onTcpReceive($fd, $reactorId, $data);
         } catch (\Throwable $e) {
@@ -222,10 +208,6 @@ abstract class AbstractServerPort
      */
     public function _onPacket($server, string $data, array $clientInfo)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            return;
-        }
         try {
             $this->onUdpPacket($data, $clientInfo);
         } catch (\Throwable $e) {
@@ -242,12 +224,6 @@ abstract class AbstractServerPort
      */
     public function _onRequest($request, $response)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            $response->end("server is not ready");
-            return;
-        }
-
         /**
          * @var $_request Request
          */
@@ -278,10 +254,6 @@ abstract class AbstractServerPort
      */
     public function _onMessage($server, $frame)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            return;
-        }
         try {
             if (isset($frame->code)) {
                 //是个CloseFrame
@@ -304,10 +276,6 @@ abstract class AbstractServerPort
      */
     public function _onHandshake($request, $response)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            return false;
-        }
         /**
          * @var $_request Request
          */
@@ -357,11 +325,6 @@ abstract class AbstractServerPort
      */
     public function _onOpen($server, $request)
     {
-        //未准备好直接关闭连接
-        if (!Server::$instance->getProcessManager()->getCurrentProcess()->isReady()) {
-            $server->disconnect($request->fd);
-            return;
-        }
         try {
             /**
              * @var $_request Request

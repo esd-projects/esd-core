@@ -674,7 +674,11 @@ abstract class Server
      */
     public function isEstablished(int $fd): bool
     {
-        return $this->server->isEstablished($fd);
+        if (is_callable([$this->server, "isEstablished"])) {
+            return $this->server->isEstablished($fd);
+        } else {
+            return false;
+        }
     }
 
     /**

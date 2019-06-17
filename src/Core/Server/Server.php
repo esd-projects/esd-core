@@ -206,6 +206,7 @@ abstract class Server
         //插件排序此时不允许添加插件了
         $this->plugManager->order();
         $this->plugManager->init($this->context);
+        $this->pluginInitialized();
         //调用所有插件的beforeServerStart
         $this->plugManager->beforeServerStart($this->context);
         //锁定配置
@@ -289,6 +290,11 @@ abstract class Server
         $this->configureReady();
     }
 
+    /**
+     * 插件初始化结束
+     * @return mixed
+     */
+    abstract public function pluginInitialized();
     /**
      * 所有的配置插件已初始化好
      * @return mixed
@@ -668,7 +674,11 @@ abstract class Server
      */
     public function isEstablished(int $fd): bool
     {
-        return $this->server->isEstablished($fd);
+        if (is_callable([$this->server, "isEstablished"])) {
+            return $this->server->isEstablished($fd);
+        } else {
+            return false;
+        }
     }
 
     /**

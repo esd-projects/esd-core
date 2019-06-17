@@ -89,11 +89,17 @@ class ConfigContext
                 preg_match_all("/\\$\{([^\\$]*)\}/i", $value, $result);
                 foreach ($result[1] as &$needConduct) {
                     $defaultArray = explode(":", $needConduct);
-                    //先获取环境变量
-                    $evn = getenv($defaultArray[0]);
+                    //获取常量
+                    $evn = constant($defaultArray[0]);
+                    //获取环境变量
+                    if (empty($evn)) {
+                        $evn = getenv($defaultArray[0]);
+                    }
+                    //获取config里的值
                     if ($evn === false) {
                         $evn = $this->get($defaultArray[0]);
                     }
+                    //获取默认值
                     if (empty($evn)) {
                         $evn = $defaultArray[1] ?? null;
                     }

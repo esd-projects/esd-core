@@ -8,6 +8,7 @@
 
 namespace ESD\Core\Server\Process;
 
+use ESD\Core\Channel\Channel;
 use ESD\Core\Context\Context;
 use ESD\Core\Context\ContextBuilder;
 use ESD\Core\Context\ContextManager;
@@ -99,9 +100,10 @@ abstract class Process
     protected $isReady = false;
 
     /**
+     * Channel[]
      * @var array
      */
-    protected $pipeMessageCache = [];
+    protected $waitChannel = [];
 
     /**
      * Process constructor.
@@ -211,6 +213,10 @@ abstract class Process
     public function setIsReady(bool $isReady): void
     {
         $this->isReady = $isReady;
+        foreach ($this->waitChannel as $channel) {
+            $channel->close();
+        }
+        $this->waitChannel = [];
     }
 
     /**
@@ -259,11 +265,6 @@ abstract class Process
             $this->server->getPlugManager()->beforeProcessStart($this->context);
             $this->server->getPlugManager()->waitReady();
             $this->setIsReady(true);
-            //延迟发送缓存的消息
-            foreach ($this->pipeMessageCache as $value) {
-                $this->_onPipeMessage($value[0], $value[1]);
-            }
-            $this->pipeMessageCache = [];
             $this->init();
             $this->log->info("ready");
             if ($this->getProcessType() == self::PROCESS_TYPE_CUSTOM) {
@@ -306,10 +307,7 @@ abstract class Process
      */
     public function _onPipeMessage(Message $message, Process $fromProcess)
     {
-        if (!$this->isReady()) {
-            $this->pipeMessageCache[] = [$message, $fromProcess];
-            return;
-        }
+        $this->waitReady();
         try {
             if (!MessageProcessor::dispatch($message)) {
                 $this->onPipeMessage($message, $fromProcess);
@@ -431,5 +429,16 @@ abstract class Process
         else {
             @swoole_set_process_name($title);
         }
+    }
+
+    /**
+     * 等待Ready
+     */
+    public function waitReady()
+    {
+        if ($this->isReady()) return;
+        $channel = DIGet(Channel::class);
+        $this->waitChannel[] = $channel;
+        $channel->pop();
     }
 }

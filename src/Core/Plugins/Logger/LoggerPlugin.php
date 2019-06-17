@@ -15,6 +15,7 @@ use ESD\Core\Plugins\Config\ConfigPlugin;
 use ESD\Core\Plugins\Event\EventDispatcher;
 use ESD\Core\Server\Server;
 use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\AbstractHandler;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Psr\Log\LoggerInterface;
@@ -30,22 +31,19 @@ class LoggerPlugin extends AbstractPlugin
      * @var Logger
      */
     private $logger;
-
-    /**
-     * @var StreamHandler
-     */
-    private $handler;
     /**
      * @var LoggerConfig
      */
     private $loggerConfig;
+    /**
+     * @var GoSwooleProcessor
+     */
+    private $goSwooleProcessor;
 
     /**
      * LoggerPlugin constructor.
      * @param LoggerConfig|null $loggerConfig
-     * @throws \DI\DependencyException
      * @throws \ReflectionException
-     * @throws \DI\NotFoundException
      */
     public function __construct(?LoggerConfig $loggerConfig = null)
     {
@@ -60,7 +58,6 @@ class LoggerPlugin extends AbstractPlugin
 
     /**
      * @param Context $context
-     * @throws \ESD\Core\Exception
      * @throws \Exception
      */
     private function buildLogger(Context $context)
@@ -70,18 +67,13 @@ class LoggerPlugin extends AbstractPlugin
             $this->loggerConfig->getDateFormat(),
             $this->loggerConfig->isAllowInlineLineBreaks(),
             $this->loggerConfig->isIgnoreEmptyContextAndExtra());
-        $serverConfig = Server::$instance->getServerConfig();
-        if ($serverConfig->isDaemonize()) {
-            $this->handler = new RotatingFileHandler($serverConfig->getBinDir() . "/logs/" . $this->loggerConfig->getName() . ".log",
-                $this->loggerConfig->getMaxFiles(),
-                Logger::DEBUG);
-        } else {
-            $this->handler = new StreamHandler('php://stderr', Logger::DEBUG);
-        }
-        $this->handler->setFormatter($formatter);
-        $this->logger->pushProcessor(new GoSwooleProcessor($this->loggerConfig->isColor()));
+        //屏幕打印
+        $handler = new StreamHandler('php://stderr', $this->loggerConfig->getLevel());
+        $this->logger->pushHandler($handler);
+        $handler->setFormatter($formatter);
+        $this->goSwooleProcessor = new GoSwooleProcessor($this->loggerConfig->isColor());
+        $this->logger->pushProcessor($this->goSwooleProcessor);
         $this->logger->pushProcessor(new GoIntrospectionProcessor());
-        $this->logger->pushHandler($this->handler);
         DISet(LoggerInterface::class, $this->logger);
         DISet(\Monolog\Logger::class, $this->logger);
         DISet(Logger::class, $this->logger);
@@ -97,22 +89,43 @@ class LoggerPlugin extends AbstractPlugin
     {
         $this->loggerConfig->merge();
         $this->buildLogger($context);
-        $this->handler->setLevel($this->loggerConfig->getLevel());
+        foreach ($this->logger->getHandlers() as $handler) {
+            if ($handler instanceof AbstractHandler) {
+                $handler->setLevel($this->loggerConfig->getLevel());
+            }
+        }
+        $this->goSwooleProcessor->setColor($this->loggerConfig->isColor());
     }
 
     /**
      * 在进程启动前
      * @param Context $context
+     * @throws \ESD\Core\Exception
      */
     public function beforeProcessStart(Context $context)
     {
+        $serverConfig = Server::$instance->getServerConfig();
+        if (Server::$instance->getServerConfig()->isDaemonize()) {
+            //去除屏幕打印Handler
+            $this->logger->popHandler();
+            //添加日志Handler
+            $handler = new RotatingFileHandler($serverConfig->getBinDir() . "/logs/" . $this->loggerConfig->getName() . ".log",
+                $this->loggerConfig->getMaxFiles(),
+                $this->loggerConfig->getLevel());
+            $this->logger->pushHandler($handler);
+            $this->goSwooleProcessor->setColor(false);
+        }
         //监控配置更新
         goWithContext(function () use ($context) {
             $eventDispatcher = DIGet(EventDispatcher::class);
             $call = $eventDispatcher->listen(ConfigChangeEvent::ConfigChangeEvent);
             $call->call(function ($result) {
                 $this->loggerConfig->merge();
-                $this->handler->setLevel($this->loggerConfig->getLevel());
+                foreach ($this->logger->getHandlers() as $handler) {
+                    if ($handler instanceof AbstractHandler) {
+                        $handler->setLevel($this->loggerConfig->getLevel());
+                    }
+                }
             });
         });
         $this->ready();

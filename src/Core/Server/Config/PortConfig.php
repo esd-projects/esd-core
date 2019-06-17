@@ -881,6 +881,9 @@ class PortConfig extends BaseConfig
         if ($this->isOpenWebsocketProtocol()) {
             return "ws";
         }
+        if ($this->isOpenMqttProtocol()) {
+            return "mqtt";
+        }
         if ($this->getSwooleSockType() == self::SWOOLE_SOCK_TCP || $this->getSwooleSockType() == self::SWOOLE_SOCK_TCP6) {
             return "tcp";
         }

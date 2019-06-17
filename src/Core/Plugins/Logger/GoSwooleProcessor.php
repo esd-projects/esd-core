@@ -128,4 +128,20 @@ class GoSwooleProcessor implements ProcessorInterface
             return $result;
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function isColor(): bool
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param bool $color
+     */
+    public function setColor(bool $color): void
+    {
+        $this->color = $color;
+    }
 }

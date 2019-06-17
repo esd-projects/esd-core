@@ -331,7 +331,7 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function getUploadedFiles()
     {
-        return $this->uploadedFiles;
+        return $this->files;
     }
 
     /**
@@ -346,7 +346,7 @@ abstract class AbstractRequest implements RequestInterface, ServerRequestInterfa
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
-        $this->uploadedFiles = $uploadedFiles;
+        $this->files = $uploadedFiles;
         return $this;
     }
 

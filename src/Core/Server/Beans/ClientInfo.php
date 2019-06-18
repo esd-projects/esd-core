@@ -87,7 +87,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getReactorId()
     {
@@ -95,7 +95,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getServerFd()
     {
@@ -103,7 +103,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getServerPort()
     {
@@ -111,7 +111,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getRemotePort()
     {
@@ -119,7 +119,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getRemoteIp()
     {
@@ -127,7 +127,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getConnectTime()
     {
@@ -135,7 +135,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getLastTime()
     {
@@ -143,7 +143,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getCloseErrno()
     {
@@ -151,7 +151,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getWebsocketStatus()
     {
@@ -159,7 +159,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getSslClientCert()
     {
@@ -167,7 +167,7 @@ class ClientInfo
     }
 
     /**
-     * @return null
+     * @return int
      */
     public function getUid()
     {
